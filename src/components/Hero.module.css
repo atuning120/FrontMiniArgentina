@@ -8,7 +8,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: linear-gradient(135deg, var(--midnight), var(--midnight-light));
 
-  & .glow {
+  .glow {
     position: absolute;
     inset: 0;
     opacity: 0.12;
@@ -16,14 +16,14 @@
     pointer-events: none;
   }
 
-  & .content {
+  .content {
     position: relative;
     z-index: 1;
     text-align: center;
     padding: 0 1.5rem;
   }
 
-  & .title {
+  .title {
     margin: 0 0 1rem;
     font-size: clamp(2rem, 4vw, 3.25rem);
     font-family: var(--font-display);
@@ -31,17 +31,13 @@
     letter-spacing: -0.02em;
     line-height: 1.1;
 
-    @media (min-width: 1024px) {
-      font-size: clamp(2.5rem, 3vw, 3.5rem);
-    }
-
     span {
       font-style: italic;
       color: var(--accent-400);
     }
   }
 
-  & .subtitle {
+  .subtitle {
     margin: 0;
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -52,7 +48,20 @@
     margin-left: auto;
     margin-right: auto;
 
-    @media (min-width: 768px) {
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    .title {
+      font-size: clamp(2.5rem, 3vw, 3.5rem);
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .hero {
+    .subtitle {
       font-size: 0.875rem;
     }
   }

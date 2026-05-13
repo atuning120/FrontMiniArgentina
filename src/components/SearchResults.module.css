@@ -1,0 +1,227 @@
+.products {
+	max-width: none;
+	margin: 0 auto;
+	padding: clamp(2.5rem, 6vw, 4rem) clamp(1.25rem, 4vw, 3.5rem);
+	width: 100%;
+
+	.header {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		padding-bottom: 2rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+		margin-bottom: 3rem;
+	}
+
+	.title {
+		margin: 0 0 0.5rem;
+		font-size: 1.5rem;
+		font-family: var(--font-display);
+		font-weight: 500;
+		letter-spacing: 0.02em;
+	}
+
+	.subtitle {
+		margin: 0;
+		font-size: 0.625rem;
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		color: rgba(255, 255, 255, 0.3);
+	}
+
+	.count {
+		font-size: 0.625rem;
+		font-family: var(--font-mono);
+		color: rgba(255, 255, 255, 0.2);
+		text-transform: uppercase;
+		letter-spacing: 0.2rem;
+		margin-top: 1rem;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(1, minmax(0, 1fr));
+		gap: 2.5rem;
+	}
+
+	.empty {
+		padding: 5rem 0;
+		text-align: center;
+		opacity: 0.2;
+		display: grid;
+		gap: 1rem;
+		justify-items: center;
+
+		.icon {
+			width: 3rem;
+			height: 3rem;
+		}
+
+		p {
+			font-size: 1.125rem;
+			font-family: var(--font-display);
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+		}
+
+		button {
+			border: none;
+			background: none;
+			color: var(--accent-400);
+			font-size: 0.75rem;
+			text-decoration: underline;
+			text-underline-offset: 4px;
+			cursor: pointer;
+		}
+	}
+}
+
+.product {
+	display: flex;
+	flex-direction: column;
+	padding: 1.5rem;
+	border-radius: 0;
+	border: 1px solid rgba(255, 255, 255, 0.05);
+	background: var(--midnight-light);
+	transition: border 0.2s ease;
+
+	&:hover {
+		border-color: rgba(59, 130, 246, 0.3);
+	}
+
+	.media {
+		position: relative;
+		aspect-ratio: 1 / 1;
+		overflow: hidden;
+		border-radius: 0.75rem;
+		background: rgba(0, 0, 0, 0.4);
+		margin-bottom: 2rem;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			opacity: 0.7;
+			transition: transform 0.7s ease, opacity 0.7s ease;
+		}
+	}
+
+	&:hover {
+		.media img {
+			transform: scale(1.1);
+			opacity: 1;
+		}
+	}
+
+	.tag {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+		padding: 0.25rem 0.75rem;
+		border-radius: 999px;
+		background: rgba(2, 6, 23, 0.8);
+		backdrop-filter: blur(12px);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		font-size: 0.5625rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--accent-400);
+	}
+
+	.content {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		gap: 0;
+
+		p {
+			margin: 0 0 2rem;
+			font-size: 0.6875rem;
+			color: rgba(255, 255, 255, 0.25);
+			line-height: 1.6;
+			font-weight: 300;
+		}
+	}
+
+	.headline {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 1rem;
+		margin-bottom: 0.75rem;
+
+		h4 {
+			margin: 0;
+			font-size: 1.125rem;
+			font-family: var(--font-display);
+			line-height: 1.1;
+			text-transform: uppercase;
+			letter-spacing: -0.02em;
+			font-weight: 700;
+		}
+
+		span {
+			font-family: var(--font-mono);
+			font-size: 0.875rem;
+			color: var(--accent-500);
+			font-weight: 700;
+			letter-spacing: -0.02em;
+		}
+	}
+
+	.cta {
+		margin-top: auto;
+		padding: 1rem 0;
+		border-radius: 0.5rem;
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		background: var(--midnight);
+		color: #fff;
+		font-size: 0.625rem;
+		text-transform: uppercase;
+		letter-spacing: 0.25em;
+		font-weight: 700;
+		cursor: pointer;
+		transition: all 0.2s ease;
+
+		&:hover {
+			background: var(--accent-600);
+			border-color: var(--accent-600);
+		}
+	}
+}
+
+@media (min-width: 1024px) {
+	.products {
+		.title {
+			font-size: 1.75rem;
+		}
+
+		.grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 2.75rem;
+		}
+	}
+
+	.product {
+		padding: 1.75rem;
+	}
+}
+
+@media (min-width: 768px) {
+	.products {
+		.header {
+			flex-direction: row;
+			align-items: flex-end;
+			justify-content: space-between;
+		}
+
+		.count {
+			margin-top: 0;
+		}
+
+		.grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+}

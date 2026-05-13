@@ -1,21 +1,18 @@
 import { useMemo, useState } from 'react';
 import {
-  Filter,
-  Mail,
-  MapPin,
-  MessageCircle,
   Minus,
   Plus,
-  Search,
   ShoppingCart,
   Trash2,
   X,
 } from 'lucide-react';
-import { FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa';
 import { AnimatePresence, motion } from 'motion/react';
 import { PRODUCTS } from './constants';
 import Hero from './components/Hero.jsx';
 import Navbar from './components/Navbar.jsx';
+import Filters from './components/Filters.jsx';
+import Footer from './components/Footer.jsx';
+import SearchResults from './components/SearchResults.jsx';
 import styles from './App.module.css';
 
 export default function App() {
@@ -113,166 +110,23 @@ export default function App() {
       {/* HERO*/}
       <Hero />
 
-      <div className={styles.filters}>
-        <div className={styles.filters__inner}>
-          <div className={styles.search}>
-            <Search className={styles.search__icon} />
-            <input
-              type="text"
-              placeholder="Buscar cables, reflectores..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles.search__input}
-            />
-          </div>
+      {/* Filtros*/}
+      <Filters
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        categories={categories}
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+      />
 
-          <div className={styles.categories}>
-            <Filter className={styles.categories__icon} />
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`${styles.categories__button} ${
-                  activeCategory === cat ? styles.isActive : ''
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+      <SearchResults
+        filteredProducts={filteredProducts}
+        addToCart={addToCart}
+        setSearchQuery={setSearchQuery}
+        setActiveCategory={setActiveCategory}
+      />
 
-      <main className={styles.products}>
-        <div className={styles.products__header}>
-          <div>
-            <h3 className={styles.products__title}>Resultados de Búsqueda</h3>
-            <p className={styles.products__subtitle}>
-              Encuentra lo que necesitas para tu obra
-            </p>
-          </div>
-          <div className={styles.products__count}>
-            ITEMS ENCONTRADOS: {filteredProducts.length}
-          </div>
-        </div>
-
-        {filteredProducts.length > 0 ? (
-          <div className={styles.products__grid}>
-            {filteredProducts.map((product) => (
-              <motion.div
-                key={product.id}
-                layout
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={styles.product}
-              >
-                <div className={styles.product__media}>
-                  <img src={product.image} alt={product.name} referrerPolicy="no-referrer" />
-                  <span className={styles.product__tag}>{product.category}</span>
-                </div>
-
-                <div className={styles.product__content}>
-                  <div className={styles.product__headline}>
-                    <h4>{product.name}</h4>
-                    <span>${product.price.toLocaleString()}</span>
-                  </div>
-                  <p>{product.description}</p>
-                  <button
-                    onClick={() => addToCart(product)}
-                    className={styles.product__cta}
-                  >
-                    Agregar
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className={styles.products__empty}>
-            <Search className={styles.icon} />
-            <p>No se encontraron productos</p>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setActiveCategory('Todos');
-              }}
-            >
-              Reiniciar filtros
-            </button>
-          </div>
-        )}
-      </main>
-
-      <footer className={styles.footer}>
-        <div className={styles.footer__inner}>
-          <div className={styles.footer__grid}>
-            <div className={styles.footer__brand}>
-              <h4>
-                ELECTRIC<span>PRO</span>
-              </h4>
-              <p>
-                Empresa especializada en la importación y distribución técnica de componentes
-                eléctricos. Soluciones integrales para proyectos de gran escala.
-              </p>
-              <div className={styles.footer__social}>
-                <a href="#" title="Instagram">
-                  <FaInstagram className={styles.icon} />
-                </a>
-                <a href="#" title="YouTube">
-                  <FaYoutube className={styles.icon} />
-                </a>
-                <a href="#" title="Facebook">
-                  <FaFacebookF className={styles.icon} />
-                </a>
-              </div>
-            </div>
-
-            <div className={styles.footer__contact}>
-              <h5>Central de Contacto</h5>
-              <div className={styles.footer__columns}>
-                <ul>
-                  <li>
-                    <div className={`${styles.footer__icon} ${styles.isAccent}`}>
-                      <Mail className={styles.icon} />
-                    </div>
-                    <div>
-                      <span>Email Corporativo</span>
-                      <strong>info@electricpro.com</strong>
-                    </div>
-                  </li>
-                </ul>
-                <ul>
-                  <li>
-                    <div className={`${styles.footer__icon} ${styles.isGreen}`}>
-                      <MessageCircle className={styles.icon} />
-                    </div>
-                    <div>
-                      <span>WhatsApp Soporte</span>
-                      <strong>+54 9 11 1234-5678</strong>
-                    </div>
-                  </li>
-                </ul>
-                <ul>
-                  <li>
-                    <div className={styles.footer__icon}>
-                      <MapPin className={styles.icon} />
-                    </div>
-                    <div>
-                      <span>Nuestra Sede</span>
-                      <strong>Pque. Industrial, Buenos Aires.</strong>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.footer__bottom}>
-            <p>&copy; 2026 ELECTRICPRO SOLUTIONS. TRABAJAMOS CON LOS MEJORES.</p>
-            <span>PAGOS PROCESADOS POR MERCADO PAGO</span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       <AnimatePresence>
         {isCartOpen && (
