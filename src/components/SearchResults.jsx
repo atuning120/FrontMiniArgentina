@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { Search, ShoppingCart } from 'lucide-react';
 import { motion } from 'motion/react';
 import styles from './SearchResults.module.css';
 
@@ -34,21 +34,26 @@ export default function SearchResults({
             >
               <div className={styles.media}>
                 <img src={product.image} alt={product.name} referrerPolicy="no-referrer" />
-                <span className={styles.tag}>{product.category}</span>
               </div>
 
               <div className={styles.content}>
+                <span className={styles.tag}>{product.category}</span>
                 <div className={styles.headline}>
                   <h4>{product.name}</h4>
-                  <span>${product.price.toLocaleString()}</span>
                 </div>
                 <p>{product.description}</p>
-                <button
-                  onClick={() => addToCart(product)}
-                  className={styles.cta}
-                >
-                  Agregar
-                </button>
+                <div className={styles.actions}>
+                  <span className={styles.price}>
+                    ${product.price.toLocaleString()}
+                  </span>
+                  <button
+                    onClick={() => addToCart(product)}
+                    className={styles.cta}
+                  >
+                    <ShoppingCart className={styles.ctaIcon} aria-hidden="true" />
+                    Agregar
+                  </button>
+                </div>
               </div>
             </motion.div>
           ))}

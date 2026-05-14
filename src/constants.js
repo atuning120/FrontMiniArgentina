@@ -13,7 +13,7 @@ export const PRODUCTS = [
     description: "Rollo de 100 metros, certificado por normas de seguridad.",
     price: 32000,
     category: "Cables",
-    image: "https://images.unsplash.com/photo-1558444458-54451f2b23c9?q=80&w=400&h=300&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?q=80&w=400&h=300&auto=format&fit=crop",
   },
   {
     id: "prod_3",

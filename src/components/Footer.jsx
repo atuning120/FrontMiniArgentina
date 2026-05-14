@@ -32,7 +32,7 @@ export default function Footer() {
             <h5>Central de Contacto</h5>
             <div className={styles.columns}>
               <ul>
-                <li>
+                <li className={styles.contactCard}>
                   <div className={`${styles.iconContainer} ${styles.isAccent}`}>
                     <Mail className={styles.icon} />
                   </div>
@@ -43,7 +43,7 @@ export default function Footer() {
                 </li>
               </ul>
               <ul>
-                <li>
+                <li className={styles.contactCard}>
                   <div className={`${styles.iconContainer} ${styles.isGreen}`}>
                     <MessageCircle className={styles.icon} />
                   </div>
@@ -54,7 +54,7 @@ export default function Footer() {
                 </li>
               </ul>
               <ul>
-                <li>
+                <li className={styles.contactCard}>
                   <div className={styles.iconContainer}>
                     <MapPin className={styles.icon} />
                   </div>

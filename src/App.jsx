@@ -97,11 +97,11 @@ export default function App() {
   return (
     <div className={styles.app}>
 
-      {/*NAVBAR */}
+      {/*Navbar */}
       <Navbar cartCount={cartCount} onOpenCart={() => setIsCartOpen(true)} />
 
 
-      {/* HERO*/}
+      {/* Hero*/}
       <Hero />
 
       {/* Filtros*/}
@@ -113,6 +113,7 @@ export default function App() {
         setActiveCategory={setActiveCategory}
       />
 
+      {/* SearchResults */}
       <SearchResults
         filteredProducts={filteredProducts}
         addToCart={addToCart}
@@ -120,8 +121,11 @@ export default function App() {
         setActiveCategory={setActiveCategory}
       />
 
+      {/* Footer */}
       <Footer />
 
+
+      {/* Cart */}
       <Cart
         isCartOpen={isCartOpen}
         setIsCartOpen={setIsCartOpen}
