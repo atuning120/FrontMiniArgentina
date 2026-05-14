@@ -5,14 +5,14 @@
   place-items: center;
   width: 100%;
   overflow: hidden;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.12);
-  background: linear-gradient(135deg, var(--midnight), #e2e8f0);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, var(--midnight), var(--midnight-light));
 
   .glow {
     position: absolute;
     inset: 0;
-    opacity: 0.08;
-    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.35) 0%, transparent 70%);
+    opacity: 0.12;
+    background: radial-gradient(circle at center, var(--accent-500) 0%, transparent 70%);
     pointer-events: none;
   }
 
@@ -42,7 +42,7 @@
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.3em;
-    color: rgba(15, 23, 42, 0.55);
+    color: rgba(255, 255, 255, 0.4);
     font-weight: 300;
     max-width: 32rem;
     margin-left: auto;

@@ -1,15 +1,19 @@
 :global(:root) {
-	color-scheme: light;
+	color-scheme: dark;
 	--font-sans: 'Inter', system-ui, sans-serif;
 	--font-display: 'Space Grotesk', sans-serif;
 	--font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-	--midnight: #f8fafc;
-	--midnight-light: #ffffff;
+	--midnight: #020617;
+	--midnight-light: #0f172a;
+	--accent-300: #93c5fd;
 	--accent-400: #60a5fa;
 	--accent-500: #3b82f6;
 	--accent-600: #2563eb;
-	--text: #0f172a;
-	--muted: rgba(15, 23, 42, 0.5);
+	--accent-700: #1d4ed8;
+	--accent-800: #1e40af;
+	--accent-900: #1e3a8a;
+	--text: #e5e5e5;
+	--muted: rgba(255, 255, 255, 0.32);
 }
 
 :global(*) {
@@ -42,6 +46,6 @@
 	font-family: var(--font-sans);
 
 	& ::selection {
-		background: rgba(59, 130, 246, 0.2);
+		background: rgba(59, 130, 246, 0.3);
 	}
 }
