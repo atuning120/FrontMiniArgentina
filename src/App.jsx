@@ -1,6 +1,4 @@
-import { useMemo, useState } from 'react';
-
-import { PRODUCTS } from './constants';
+import { useEffect, useMemo, useState } from 'react';
 import Hero from './components/Hero.jsx';
 import Navbar from './components/Navbar.jsx';
 import Filters from './components/Filters.jsx';
@@ -10,6 +8,9 @@ import Cart from './components/Cart.jsx';
 import styles from './App.module.css';
 
 export default function App() {
+  const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [productsError, setProductsError] = useState(null);
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
@@ -17,20 +18,67 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todos');
 
-  const categories = useMemo(() => {
-    const cats = new Set(PRODUCTS.map((p) => p.category));
-    return ['Todos', ...Array.from(cats)];
+  useEffect(() => {
+    let isMounted = true;
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+    async function loadProducts() {
+      try {
+        setLoadingProducts(true);
+        setProductsError(null);
+        const response = await fetch(`${baseUrl}/api/productos/hogar/electronico`);
+        if (!response.ok) {
+          throw new Error('Error al cargar productos');
+        }
+        const data = await response.json();
+        const mapped = data.map((item) => ({
+          id: item.sku || String(item.id_catalogo),
+          name: item.nombre || 'Producto sin nombre',
+          description: item.descripcion || '',
+          price: Number.isFinite(item.precio) ? item.precio : 0,
+          category: item.categoria || 'Sin categoria',
+          image: item.imagen || '',
+          currency: item.moneda || 'ARS',
+          raw: item,
+        }));
+
+        if (isMounted) {
+          setProducts(mapped);
+        }
+      } catch (err) {
+        console.error(err);
+        if (isMounted) {
+          setProductsError('No se pudieron cargar los productos.');
+        }
+      } finally {
+        if (isMounted) {
+          setLoadingProducts(false);
+        }
+      }
+    }
+
+    loadProducts();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
+  const categories = useMemo(() => {
+    const cats = new Set(products.map((p) => p.category));
+    return ['Todos', ...Array.from(cats)];
+  }, [products]);
+
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((p) => {
-      const matchesSearch =
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return products.filter((p) => {
+      const name = (p.name || '').toLowerCase();
+      const description = (p.description || '').toLowerCase();
+      const query = searchQuery.toLowerCase();
+      const matchesSearch = name.includes(query) || description.includes(query);
       const matchesCategory = activeCategory === 'Todos' || p.category === activeCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, activeCategory]);
+  }, [products, searchQuery, activeCategory]);
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
   const cartTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -119,6 +167,8 @@ export default function App() {
         addToCart={addToCart}
         setSearchQuery={setSearchQuery}
         setActiveCategory={setActiveCategory}
+        loading={loadingProducts}
+        error={productsError}
       />
 
       {/* Footer */}

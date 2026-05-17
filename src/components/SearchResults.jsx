@@ -7,6 +7,8 @@ export default function SearchResults({
   addToCart,
   setSearchQuery,
   setActiveCategory,
+  loading,
+  error,
 }) {
   return (
     <main className={styles.products}>
@@ -22,7 +24,17 @@ export default function SearchResults({
         </div>
       </div>
 
-      {filteredProducts.length > 0 ? (
+      {error ? (
+        <div className={styles.empty}>
+          <Search className={styles.icon} />
+          <p>{error}</p>
+        </div>
+      ) : loading ? (
+        <div className={styles.empty}>
+          <Search className={styles.icon} />
+          <p>Cargando productos...</p>
+        </div>
+      ) : filteredProducts.length > 0 ? (
         <div className={styles.grid}>
           {filteredProducts.map((product) => (
             <motion.div
@@ -33,7 +45,11 @@ export default function SearchResults({
               className={styles.product}
             >
               <div className={styles.media}>
-                <img src={product.image} alt={product.name} referrerPolicy="no-referrer" />
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  referrerPolicy="no-referrer"
+                />
               </div>
 
               <div className={styles.content}>
