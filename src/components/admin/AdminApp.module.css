@@ -1,0 +1,310 @@
+.admin {
+  min-height: 100vh;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background: radial-gradient(circle at top, rgba(224, 231, 255, 0.5), transparent 55%),
+    linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  color: #0f172a;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: rgba(15, 23, 42, 0.6);
+  margin: 0 0 0.35rem;
+}
+
+.header h1 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.navButton {
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  background: rgba(255, 255, 255, 0.8);
+  color: rgba(15, 23, 42, 0.8);
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border 0.2s ease;
+}
+
+.navButtonActive {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.logout {
+  align-self: flex-start;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: transparent;
+  color: rgba(15, 23, 42, 0.7);
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 1.25rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.formGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 1.5rem;
+}
+
+.formActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: rgba(15, 23, 42, 0.8);
+}
+
+.input,
+.textarea,
+select {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.checkbox {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.primary {
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.secondary {
+  background: rgba(148, 163, 184, 0.2);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  color: rgba(15, 23, 42, 0.8);
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.danger {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #b91c1c;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.notice {
+  margin-top: 1rem;
+  color: rgba(15, 23, 42, 0.75);
+}
+
+.error {
+  color: #b91c1c;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.tableActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editPanel {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.loginWrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: radial-gradient(circle at top, rgba(191, 219, 254, 0.5), transparent 55%),
+    linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.loginCard {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  width: min(420px, 100%);
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.orderItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.orderRow {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(200px, 1fr) 120px auto;
+}
+
+.orderSummary {
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.ordersList {
+  display: grid;
+  gap: 1rem;
+}
+
+.orderCard {
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(248, 250, 252, 0.6);
+}
+
+.orderHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.orderStatus {
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.15);
+  color: #166534;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.orderListItems {
+  margin: 0.75rem 0;
+  padding-left: 1rem;
+}
+
+.orderTotal {
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.orderNotes {
+  margin-top: 0.5rem;
+  color: rgba(15, 23, 42, 0.7);
+}
+
+@media (min-width: 960px) {
+  .header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .headerActions {
+    align-items: flex-end;
+  }
+}
+
+@media (max-width: 720px) {
+  .orderRow {
+    grid-template-columns: 1fr;
+  }
+}

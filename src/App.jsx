@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
+import AdminApp from './components/admin/AdminApp.jsx';
+import ProductModal from './components/ProductModal.jsx';
 import Hero from './components/Hero.jsx';
 import Navbar from './components/Navbar.jsx';
 import Filters from './components/Filters.jsx';
@@ -7,14 +9,15 @@ import SearchResults from './components/SearchResults.jsx';
 import Cart from './components/Cart.jsx';
 import styles from './App.module.css';
 
-export default function App() {
+function ClientApp() {
+  const baseCategories = ['iluminacion', 'ferreteria', 'limpieza'];
+  const normalizeCategory = (value) => value.trim().toLowerCase();
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [productsError, setProductsError] = useState(null);
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [loadingCheckout, setLoadingCheckout] = useState(false);
-  const [error, setError] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todos');
 
@@ -31,16 +34,21 @@ export default function App() {
           throw new Error('Error al cargar productos');
         }
         const data = await response.json();
-        const mapped = data.map((item) => ({
-          id: item.sku || String(item.id_catalogo),
-          name: item.nombre || 'Producto sin nombre',
-          description: item.descripcion || '',
-          price: Number.isFinite(item.precio) ? item.precio : 0,
-          category: item.categoria || 'Sin categoria',
-          image: item.imagen || '',
-          currency: item.moneda || 'ARS',
-          raw: item,
-        }));
+        const mapped = data.map((item) => {
+          const normalizedCategory = normalizeCategory(item.categoria || '');
+          return {
+            id: item.sku || String(item.id_catalogo),
+            name: item.nombre || 'Producto sin nombre',
+            description: item.descripcion || '',
+            price: Number.isFinite(item.precio) ? item.precio : 0,
+            category: baseCategories.includes(normalizedCategory)
+              ? normalizedCategory
+              : baseCategories[0],
+            image: item.imagen || '',
+            currency: item.moneda || 'ARS',
+            raw: item,
+          };
+        });
 
         if (isMounted) {
           setProducts(mapped);
@@ -64,10 +72,10 @@ export default function App() {
     };
   }, []);
 
-  const categories = useMemo(() => {
-    const cats = new Set(products.map((p) => p.category));
-    return ['Todos', ...Array.from(cats)];
-  }, [products]);
+  const filterCategories = useMemo(
+    () => ['Todos', ...baseCategories],
+    [baseCategories]
+  );
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
@@ -113,35 +121,6 @@ export default function App() {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleCheckout = async () => {
-    if (cart.length === 0) return;
-    setLoadingCheckout(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/create-preference', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: cart }),
-      });
-
-      const data = await response.json();
-
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      if (data.init_point) {
-        window.location.href = data.init_point;
-      }
-    } catch (err) {
-      console.error(err);
-      setError(err.message || 'Error al iniciar el pago. Intenta de nuevo más tarde.');
-    } finally {
-      setLoadingCheckout(false);
-    }
-  };
-
   return (
     <div className={styles.app}>
 
@@ -156,7 +135,7 @@ export default function App() {
       <Filters
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        categories={categories}
+        filterCategories={filterCategories}
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
       />
@@ -169,6 +148,7 @@ export default function App() {
         setActiveCategory={setActiveCategory}
         loading={loadingProducts}
         error={productsError}
+        onProductClick={setSelectedProduct}
       />
 
       {/* Footer */}
@@ -184,10 +164,31 @@ export default function App() {
         cartTotal={cartTotal}
         removeFromCart={removeFromCart}
         updateQuantity={updateQuantity}
-        error={error}
-        loadingCheckout={loadingCheckout}
-        handleCheckout={handleCheckout}
       />
+
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={addToCart}
+        />
+      )}
     </div>
   );
+}
+
+export default function App() {
+  const [hash, setHash] = useState(() => window.location.hash);
+
+  useEffect(() => {
+    const handleChange = () => setHash(window.location.hash);
+    window.addEventListener('hashchange', handleChange);
+    return () => window.removeEventListener('hashchange', handleChange);
+  }, []);
+
+  if (hash.startsWith('#/admin')) {
+    return <AdminApp />;
+  }
+
+  return <ClientApp />;
 }

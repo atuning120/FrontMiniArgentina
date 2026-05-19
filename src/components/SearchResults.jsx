@@ -9,6 +9,7 @@ export default function SearchResults({
   setActiveCategory,
   loading,
   error,
+  onProductClick,
 }) {
   return (
     <main className={styles.products}>
@@ -37,12 +38,28 @@ export default function SearchResults({
       ) : filteredProducts.length > 0 ? (
         <div className={styles.grid}>
           {filteredProducts.map((product) => (
+            (() => {
+              const percentage = Number(product.raw?.porcentaje_oferta || 0);
+              const hasOffer = Boolean(product.raw?.en_oferta) && percentage > 0;
+              const oldPrice = hasOffer
+                ? Math.round(product.price / (1 - percentage / 100))
+                : null;
+
+              return (
             <motion.div
               key={product.id}
               layout
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className={styles.product}
+              role="button"
+              tabIndex={0}
+              onClick={() => onProductClick(product)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  onProductClick(product);
+                }
+              }}
             >
               <div className={styles.media}>
                 <img
@@ -50,6 +67,18 @@ export default function SearchResults({
                   alt={product.name}
                   referrerPolicy="no-referrer"
                 />
+                {(hasOffer || product.raw?.destacado) && (
+                  <div className={styles.badges}>
+                    {hasOffer && (
+                      <span className={styles.badgeOffer}>
+                        Oferta {percentage}%
+                      </span>
+                    )}
+                    {product.raw?.destacado && (
+                      <span className={styles.badgeFeatured}>Destacado</span>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className={styles.content}>
@@ -59,11 +88,21 @@ export default function SearchResults({
                 </div>
                 <p>{product.description}</p>
                 <div className={styles.actions}>
-                  <span className={styles.price}>
-                    ${product.price.toLocaleString()}
-                  </span>
+                  <div className={styles.priceStack}>
+                    <span className={styles.price}>
+                      ${product.price.toLocaleString()}
+                    </span>
+                    {hasOffer && oldPrice ? (
+                      <span className={styles.oldPrice}>
+                        ${oldPrice.toLocaleString()}
+                      </span>
+                    ) : null}
+                  </div>
                   <button
-                    onClick={() => addToCart(product)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      addToCart(product);
+                    }}
                     className={styles.cta}
                   >
                     <ShoppingCart className={styles.ctaIcon} aria-hidden="true" />
@@ -72,6 +111,8 @@ export default function SearchResults({
                 </div>
               </div>
             </motion.div>
+              );
+            })()
           ))}
         </div>
       ) : (

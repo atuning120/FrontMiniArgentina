@@ -4,7 +4,7 @@ import styles from './Filters.module.css';
 export default function Filters({
   searchQuery,
   setSearchQuery,
-  categories,
+  filterCategories,
   activeCategory,
   setActiveCategory,
 }) {
@@ -24,7 +24,7 @@ export default function Filters({
 
         <div className={styles.categories}>
           <Filter className={styles.icon} />
-          {categories.map((cat) => (
+          {filterCategories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}

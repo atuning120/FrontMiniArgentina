@@ -1,6 +1,9 @@
+import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Minus, Plus, ShoppingCart, Trash2, X } from 'lucide-react';
 import styles from './Cart.module.css';
+
+const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE || '';
 
 export default function Cart({
   isCartOpen,
@@ -10,10 +13,67 @@ export default function Cart({
   cartTotal,
   removeFromCart,
   updateQuantity,
-  error,
-  loadingCheckout,
-  handleCheckout,
 }) {
+  const [error, setError] = useState('');
+
+  const productPayload = useMemo(
+    () =>
+      cart.map((item) => ({
+        idproducto: item.raw?.sku || item.id,
+        cantidad: item.quantity,
+      })),
+    [cart]
+  );
+
+  const formatPrice = (value) => Number(value || 0).toLocaleString('es-AR');
+
+  const buildMessage = () => {
+    const productLines = cart.map((item) => {
+      const percentage = Number(item.raw?.porcentaje_oferta || 0);
+      const hasDiscount = Boolean(item.raw?.en_oferta) && percentage > 0;
+      const currentPrice = formatPrice(item.price);
+      const previousPrice = hasDiscount
+        ? formatPrice(Math.round(item.price / (1 - percentage / 100)))
+        : null;
+      const priceLabel = hasDiscount
+        ? `$${currentPrice}, antes $${previousPrice}`
+        : `$${currentPrice}`;
+
+      return `- ${item.quantity}x ${item.name} (${priceLabel})`;
+    });
+
+    const payload = btoa(
+      unescape(encodeURIComponent(JSON.stringify(productPayload)))
+    );
+
+    return [
+      '*Nuevo Pedido desde la Web*',
+      '*Productos*',
+      ...productLines,
+      `*Total: $${formatPrice(cartTotal)}*`,
+      '',
+      `productos:${payload}`,
+    ].join('\n');
+  };
+
+  const handleWhatsAppOrder = () => {
+    setError('');
+    if (!WHATSAPP_PHONE) {
+      setError('Falta configurar el numero de WhatsApp.');
+      return;
+    }
+    if (cart.length === 0) {
+      setError('Agrega productos antes de enviar.');
+      return;
+    }
+
+    const message = buildMessage();
+    const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
+      message
+    )}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <AnimatePresence>
       {isCartOpen && (
@@ -83,21 +143,17 @@ export default function Cart({
 
             {cart.length > 0 && (
               <div className={styles.summary}>
-                {error && <div className={styles.error}>{error}</div>}
+                {error ? <div className={styles.error}>{error}</div> : null}
                 <div className={styles.total}>
                   <span>Monto Total</span>
                   <strong>${cartTotal.toLocaleString()}</strong>
                 </div>
                 <div className={styles.checkout}>
-                  <button disabled={loadingCheckout} onClick={handleCheckout}>
-                    <span>
-                      {loadingCheckout
-                        ? 'Enlazando Checkout...'
-                        : 'Proceder al Pago con'}
-                    </span>
-                    <strong>Mercado Pago</strong>
+                  <button onClick={handleWhatsAppOrder}>
+                    <span>Enviar pedido</span>
+                    <strong>WhatsApp</strong>
                   </button>
-                  <p>Seguridad Bancaria • Mercado Pago Partner</p>
+                  <p>El pedido se enviara al WhatsApp configurado.</p>
                 </div>
               </div>
             )}
