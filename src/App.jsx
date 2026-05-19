@@ -7,11 +7,13 @@ import Filters from './components/Filters.jsx';
 import Footer from './components/Footer.jsx';
 import SearchResults from './components/SearchResults.jsx';
 import Cart from './components/Cart.jsx';
+import ProductCarousel from './components/ProductCarousel.jsx';
 import styles from './App.module.css';
 
 function ClientApp() {
   const baseCategories = ['iluminacion', 'ferreteria', 'limpieza'];
   const normalizeCategory = (value) => value.trim().toLowerCase();
+  const pageSize = 20;
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [productsError, setProductsError] = useState(null);
@@ -20,6 +22,7 @@ function ClientApp() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todos');
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     let isMounted = true;
@@ -88,6 +91,30 @@ function ClientApp() {
     });
   }, [products, searchQuery, activeCategory]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, activeCategory]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredProducts.slice(start, start + pageSize);
+  }, [filteredProducts, currentPage]);
+
+  const featuredProducts = useMemo(
+    () => products.filter((item) => Boolean(item.raw?.destacado)),
+    [products]
+  );
+
+  const offerProducts = useMemo(
+    () =>
+      products.filter(
+        (item) =>
+          Boolean(item.raw?.en_oferta) && Number(item.raw?.porcentaje_oferta || 0) > 0
+      ),
+    [products]
+  );
+
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
   const cartTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
@@ -131,24 +158,44 @@ function ClientApp() {
       {/* Hero*/}
       <Hero />
 
-      {/* Filtros*/}
-      <Filters
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        filterCategories={filterCategories}
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
+      <ProductCarousel
+        title="Destacados"
+        subtitle="Los favoritos de esta semana"
+        products={featuredProducts}
+        onProductClick={setSelectedProduct}
+        onAddToCart={addToCart}
+      />
+
+      <ProductCarousel
+        title="En oferta"
+        subtitle="Descuentos activos por tiempo limitado"
+        products={offerProducts}
+        onProductClick={setSelectedProduct}
+        onAddToCart={addToCart}
       />
 
       {/* SearchResults */}
       <SearchResults
         filteredProducts={filteredProducts}
+        paginatedProducts={paginatedProducts}
         addToCart={addToCart}
         setSearchQuery={setSearchQuery}
         setActiveCategory={setActiveCategory}
         loading={loadingProducts}
         error={productsError}
         onProductClick={setSelectedProduct}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        filters={(
+          <Filters
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            filterCategories={filterCategories}
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+          />
+        )}
       />
 
       {/* Footer */}
