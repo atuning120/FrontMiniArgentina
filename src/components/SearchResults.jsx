@@ -1,5 +1,6 @@
 import { Search, ShoppingCart } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useEffect, useRef } from 'react';
 import styles from './SearchResults.module.css';
 
 export default function SearchResults({
@@ -16,6 +17,22 @@ export default function SearchResults({
   totalPages,
   onPageChange,
 }) {
+  const containerRef = useRef(null);
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (containerRef.current) {
+      // Ajustamos el scroll para ir al inicio del componente
+      const yOffset = -20; // Un poco de margen superior
+      const y = containerRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }, [currentPage]);
+
   const maxButtons = 5;
   const clampedCurrent = Math.min(currentPage, totalPages);
   const startPage = Math.max(1, clampedCurrent - Math.floor(maxButtons / 2));
@@ -28,7 +45,7 @@ export default function SearchResults({
   }
 
   return (
-    <main className={styles.products}>
+    <main ref={containerRef} className={styles.products}>
       <div className={styles.header}>
         <div>
           <h3 className={styles.title}>Todos los productos</h3>
@@ -77,11 +94,15 @@ export default function SearchResults({
               }}
             >
               <div className={styles.media}>
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  referrerPolicy="no-referrer"
-                />
+                {product.image?.trim() ? (
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className={styles.noImage}>No hay imagen</div>
+                )}
                 {(hasOffer || product.raw?.destacado) && (
                   <div className={styles.badges}>
                     {hasOffer && (

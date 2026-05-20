@@ -1,4 +1,4 @@
-import { Filter, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import styles from './Filters.module.css';
 
 export default function Filters({
@@ -23,7 +23,6 @@ export default function Filters({
         </div>
 
         <div className={styles.categories}>
-          <Filter className={styles.icon} />
           {filterCategories.map((cat) => (
             <button
               key={cat}

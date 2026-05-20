@@ -58,7 +58,15 @@ export default function ProductCarousel({
               }}
             >
               <div className={styles.media}>
-                <img src={product.image} alt={product.name} referrerPolicy="no-referrer" />
+                {product.image?.trim() ? (
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className={styles.noImage}>No hay imagen</div>
+                )}
                 {(hasOffer || product.raw?.destacado) && (
                   <div className={styles.badges}>
                     {hasOffer && (

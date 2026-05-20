@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import AdminApp from './components/admin/AdminApp.jsx';
 import ProductModal from './components/ProductModal.jsx';
 import Hero from './components/Hero.jsx';
 import Navbar from './components/Navbar.jsx';
@@ -10,7 +9,7 @@ import Cart from './components/Cart.jsx';
 import ProductCarousel from './components/ProductCarousel.jsx';
 import styles from './App.module.css';
 
-function ClientApp() {
+export default function App() {
   const baseCategories = ['iluminacion', 'ferreteria', 'limpieza'];
   const normalizeCategory = (value) => value.trim().toLowerCase();
   const pageSize = 20;
@@ -222,20 +221,4 @@ function ClientApp() {
       )}
     </div>
   );
-}
-
-export default function App() {
-  const [hash, setHash] = useState(() => window.location.hash);
-
-  useEffect(() => {
-    const handleChange = () => setHash(window.location.hash);
-    window.addEventListener('hashchange', handleChange);
-    return () => window.removeEventListener('hashchange', handleChange);
-  }, []);
-
-  if (hash.startsWith('#/admin')) {
-    return <AdminApp />;
-  }
-
-  return <ClientApp />;
 }
