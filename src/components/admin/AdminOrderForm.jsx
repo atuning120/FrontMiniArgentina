@@ -4,7 +4,14 @@ import styles from './AdminApp.module.css';
 export default function AdminOrderForm({ baseUrl, token }) {
   const [products, setProducts] = useState([]);
   const [items, setItems] = useState([
-    { sku: '', quantity: 1, name: '', price: '' },
+    {
+      sku: '',
+      quantity: 1,
+      name: '',
+      price: '',
+      lineTotal: '',
+      lineTotalManual: false,
+    },
   ]);
   const [notes, setNotes] = useState('');
   const [notice, setNotice] = useState('');
@@ -15,6 +22,7 @@ export default function AdminOrderForm({ baseUrl, token }) {
   const [ivaRate, setIvaRate] = useState(21);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [totalOverride, setTotalOverride] = useState('');
 
   const headers = useMemo(
     () => ({
@@ -48,6 +56,19 @@ export default function AdminOrderForm({ baseUrl, token }) {
     return new Map(products.map((product) => [product.sku, product]));
   }, [products]);
 
+  const formatNumber = (value) => {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return '';
+    return number.toLocaleString('es-AR');
+  };
+
+  const parseNumberInput = (value) => {
+    if (value === '') return '';
+    const normalized = value.replace(/\./g, '').replace(',', '.');
+    const number = Number(normalized);
+    return Number.isFinite(number) ? number : '';
+  };
+
   const normalizedItems = items
     .map((item) => {
       const product = productMap.get(item.sku);
@@ -56,12 +77,19 @@ export default function AdminOrderForm({ baseUrl, token }) {
       const resolvedPrice = Number.isFinite(price)
         ? price
         : Number(product?.precio) || 0;
+      const lineTotalValue = Number(item.lineTotal);
+      const resolvedLineTotal =
+        item.lineTotalManual && Number.isFinite(lineTotalValue)
+          ? lineTotalValue
+          : resolvedPrice * quantity;
+      const adjustedPrice =
+        quantity > 0 ? resolvedLineTotal / quantity : resolvedPrice;
 
       return {
         sku: item.sku,
         quantity,
         name: item.name || product?.nombre || '',
-        price: resolvedPrice,
+        price: adjustedPrice,
       };
     })
     .filter((item) => item.sku);
@@ -71,8 +99,14 @@ export default function AdminOrderForm({ baseUrl, token }) {
     0
   );
   const ivaPercent = Number(ivaRate) || 0;
-  const ivaAmount = ivaEnabled ? subtotal * (ivaPercent / 100) : 0;
-  const total = subtotal + ivaAmount;
+  const ivaAmount = ivaEnabled
+    ? Math.ceil(subtotal * (ivaPercent / 100))
+    : 0;
+  const computedTotal = subtotal + ivaAmount;
+  const parsedTotalOverride = Number(totalOverride);
+  const hasTotalOverride =
+    totalOverride !== '' && Number.isFinite(parsedTotalOverride);
+  const total = hasTotalOverride ? parsedTotalOverride : computedTotal;
 
   const handleItemChange = (index, key, value) => {
     setItems((prev) =>
@@ -84,19 +118,52 @@ export default function AdminOrderForm({ baseUrl, token }) {
             ...item,
             sku: value,
             name: product?.nombre || '',
-            price:
-              item.price !== ''
-                ? item.price
-                : product?.precio ?? item.price,
+            price: product?.precio ?? '',
+            lineTotal: '',
+            lineTotalManual: false,
           };
         }
+        if (key === 'quantity') {
+          const quantity = Number(value) || 0;
+          const price = Number(item.price);
+          const resolvedPrice = Number.isFinite(price)
+            ? price
+            : Number(productMap.get(item.sku)?.precio) || 0;
+          const computedLineTotal = resolvedPrice * quantity;
+
+          return {
+            ...item,
+            quantity: value,
+            lineTotal: computedLineTotal,
+            lineTotalManual: false,
+          };
+        }
+
+        if (key === 'lineTotal') {
+          return {
+            ...item,
+            lineTotal: value,
+            lineTotalManual: value !== '',
+          };
+        }
+
         return { ...item, [key]: value };
       })
     );
   };
 
   const addItem = () =>
-    setItems((prev) => [...prev, { sku: '', quantity: 1, name: '', price: '' }]);
+    setItems((prev) => [
+      ...prev,
+      {
+        sku: '',
+        quantity: 1,
+        name: '',
+        price: '',
+        lineTotal: '',
+        lineTotalManual: false,
+      },
+    ]);
 
   const removeItem = (index) => {
     setItems((prev) => prev.filter((_, idx) => idx !== index));
@@ -113,27 +180,42 @@ export default function AdminOrderForm({ baseUrl, token }) {
     }
 
     try {
+      const payload = {
+        items: payloadItems,
+        notes,
+        customer: {
+          nombre: customerName,
+          telefono: customerPhone,
+        },
+        tax: {
+          enabled: ivaEnabled,
+          rate: ivaPercent,
+        },
+      };
+
+      if (hasTotalOverride) {
+        payload.total = total;
+      }
+
       const response = await fetch(`${baseUrl}/api/admin/ordenes`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({
-          items: payloadItems,
-          notes,
-          customer: {
-            nombre: customerName,
-            telefono: customerPhone,
-          },
-          tax: {
-            enabled: ivaEnabled,
-            rate: ivaPercent,
-          },
-        }),
+        body: JSON.stringify(payload),
       });
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error || 'Error al crear la orden');
       }
-      setItems([{ sku: '', quantity: 1, name: '', price: '' }]);
+      setItems([
+        {
+          sku: '',
+          quantity: 1,
+          name: '',
+          price: '',
+          lineTotal: '',
+          lineTotalManual: false,
+        },
+      ]);
       setBase64Input('');
       setResolveError('');
       setNotes('');
@@ -141,6 +223,7 @@ export default function AdminOrderForm({ baseUrl, token }) {
       setCustomerPhone('');
       setIvaEnabled(true);
       setIvaRate(21);
+      setTotalOverride('');
       setNotice('Orden creada.');
     } catch (error) {
       setNotice(error.message || 'Error al crear la orden');
@@ -176,6 +259,8 @@ export default function AdminOrderForm({ baseUrl, token }) {
         quantity: item.cantidad,
         name: item.nombre || '',
         price: item.precio ?? 0,
+        lineTotal: '',
+        lineTotalManual: false,
       }));
 
       if (resolved.length === 0) {
@@ -262,8 +347,40 @@ export default function AdminOrderForm({ baseUrl, token }) {
           <div className={styles.orderBlock}>
             <h3 className={styles.orderBlockTitle}>Items de la orden</h3>
           <div className={styles.orderItems}>
+            <div className={styles.orderRowHeader}>
+              <span className={styles.orderHeaderCell}>
+                Producto
+              </span>
+              <span className={styles.orderHeaderCell}>
+                Cantidad
+              </span>
+              <span className={styles.orderHeaderCell}>
+                Precio unitario
+              </span>
+              <span className={styles.orderHeaderCell}>
+                Total item
+              </span>
+              <span className={styles.orderHeaderCell}>
+                Acciones
+              </span>
+            </div>
             {items.map((item, index) => (
               <div key={`${item.sku}-${index}`} className={styles.orderRow}>
+                {(() => {
+                  const product = productMap.get(item.sku);
+                  const quantity = Number(item.quantity) || 0;
+                  const price = Number(item.price);
+                  const resolvedPrice = Number.isFinite(price)
+                    ? price
+                    : Number(product?.precio) || 0;
+                  const lineTotalValue = Number(item.lineTotal);
+                  const resolvedLineTotal =
+                    item.lineTotalManual && Number.isFinite(lineTotalValue)
+                      ? lineTotalValue
+                      : resolvedPrice * quantity;
+
+                  return (
+                    <>
                 <select
                   value={item.sku}
                   onChange={(event) =>
@@ -279,33 +396,49 @@ export default function AdminOrderForm({ baseUrl, token }) {
                   ))}
                 </select>
                 <input
-                  type="number"
-                  min="1"
-                  value={item.quantity}
+                  type="text"
+                  inputMode="numeric"
+                  value={formatNumber(item.quantity)}
                   onChange={(event) =>
-                    handleItemChange(index, 'quantity', event.target.value)
+                    handleItemChange(
+                      index,
+                      'quantity',
+                      parseNumberInput(event.target.value)
+                    )
                   }
-                  className={styles.input}
+                  className={`${styles.input} ${styles.orderQuantityInput}`}
                 />
-                <input
-                  type="number"
-                  min="0"
-                  value={item.price}
-                  onChange={(event) =>
-                    handleItemChange(index, 'price', event.target.value)
-                  }
-                  className={styles.input}
-                  placeholder="Precio"
-                />
-                <div className={styles.orderLineTotal}>
-                  ${
-                    (
-                      (Number(item.price) ||
-                        Number(productMap.get(item.sku)?.precio) ||
-                        0) *
-                      (Number(item.quantity) || 0)
-                    ).toLocaleString('es-AR')
-                  }
+                <div className={styles.priceInputWrap}>
+                  <span className={styles.pricePrefix}>$</span>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    value={formatNumber(resolvedPrice)}
+                    className={styles.input}
+                    placeholder="Precio unitario"
+                    disabled
+                  />
+                </div>
+                <div className={styles.priceInputWrap}>
+                  <span className={styles.pricePrefix}>$</span>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    value={
+                      item.lineTotalManual
+                        ? formatNumber(item.lineTotal)
+                        : formatNumber(resolvedLineTotal)
+                    }
+                    onChange={(event) =>
+                      handleItemChange(
+                        index,
+                        'lineTotal',
+                        parseNumberInput(event.target.value)
+                      )
+                    }
+                    className={styles.orderSummaryInput}
+                    placeholder="Total item"
+                  />
                 </div>
                 <button
                   type="button"
@@ -315,6 +448,9 @@ export default function AdminOrderForm({ baseUrl, token }) {
                 >
                   Quitar
                 </button>
+                    </>
+                  );
+                })()}
               </div>
             ))}
           </div>
@@ -364,15 +500,30 @@ export default function AdminOrderForm({ baseUrl, token }) {
               <h3 className={styles.orderBlockTitle}>Resumen</h3>
               <div className={styles.orderSummary}>
                 <span>Subtotal</span>
-                <strong>${subtotal.toLocaleString('es-AR')}</strong>
+                <strong>${formatNumber(subtotal)}</strong>
               </div>
               <div className={styles.orderSummary}>
                 <span>IVA</span>
-                <strong>${ivaAmount.toLocaleString('es-AR')}</strong>
+                <strong>${formatNumber(ivaAmount)}</strong>
               </div>
               <div className={styles.orderSummary}>
                 <span>Total</span>
-                <strong>${total.toLocaleString('es-AR')}</strong>
+                <div className={styles.priceInputWrap}>
+                  <span className={styles.pricePrefix}>$</span>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    value={
+                      hasTotalOverride
+                        ? formatNumber(totalOverride)
+                        : formatNumber(computedTotal)
+                    }
+                    onChange={(event) =>
+                      setTotalOverride(parseNumberInput(event.target.value))
+                    }
+                    className={styles.orderSummaryInput}
+                  />
+                </div>
               </div>
             </div>
           </div>
