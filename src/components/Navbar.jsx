@@ -1,28 +1,34 @@
+import { ShoppingCart, Search } from 'lucide-react';
+import Logo from './Logo.jsx';
 import styles from './Navbar.module.css';
-import shoppingcart from '../assets/shopping-cart.svg';
 
-const Navbar = ({ cartCount, onOpenCart }) => {
-    return (
-        <nav className={styles.nav}>
-            <h1 className={styles.brand}>
-                ELECTRIC<span>PRO</span>
-            </h1>
+export default function Navbar({ searchQuery, onSearchChange, onCartOpen, cartCount }) {
+  return (
+    <nav className={styles.nav}>
+      <div>
+        <Logo size={85} showText={true} />
+      </div>
 
-            <div className={styles.actions}>
-                <button
-                    onClick={onOpenCart}
-                    className={styles.cartButton}
-                    id="cart-button"
-                    aria-label="Abrir carrito"
-                >
-                    <img src={shoppingcart} className={styles.icon} alt="Carrito" />
-                    {cartCount > 0 && (
-                        <span className={styles.cartBadge}>{cartCount}</span>
-                    )}
-                </button>
-            </div>
-        </nav>
-    );
-};
+      <div className={styles.navSearch}>
+        <Search className={styles.navSearchIcon} size={20} />
+        <input
+          type="text"
+          placeholder="Buscar reflectores, focos, herramientas..."
+          className={styles.navInput}
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+        />
+      </div>
 
-export default Navbar;
+      <div className={styles.navActions}>
+        <button
+          onClick={() => onCartOpen(true)}
+          className={styles.cartButton}
+        >
+          <ShoppingCart size={28} />
+          {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
+        </button>
+      </div>
+    </nav>
+  );
+}

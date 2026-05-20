@@ -10,30 +10,29 @@ export default function Filters({
 }) {
   return (
     <div className={styles.filters}>
-      <div className={styles.inner}>
-        <div className={styles.search}>
-          <Search className={styles.icon} />
-          <input
-            type="text"
-            placeholder="Buscar cables, reflectores..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={styles.input}
-          />
-        </div>
+      <div className={styles.categoryList}>
+        {filterCategories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={`${styles.categoryButton} ${
+              activeCategory === cat ? styles.categoryButtonActive : ''
+            }`}
+          >
+            {cat === 'Todos' ? 'TODOS' : cat}
+          </button>
+        ))}
+      </div>
 
-        <div className={styles.categories}>
-          {filterCategories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`${styles.button} ${activeCategory === cat ? styles.isActive : ''
-                }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+      <div className={styles.searchWrap}>
+        <Search className={styles.searchIcon} />
+        <input
+          type="text"
+          placeholder="Buscar cables, reflectores..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className={styles.searchInput}
+        />
       </div>
     </div>
   );

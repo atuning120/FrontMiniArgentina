@@ -1,23 +1,73 @@
-import { motion } from 'motion/react';
+import { MessageCircle, Truck, ShieldCheck } from 'lucide-react';
 import styles from './Hero.module.css';
 
-const Hero = () => {
+export default function Hero() {
   return (
-    <section className={styles.hero}>
-      <div className={styles.glow} aria-hidden="true" />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1 }}
-        className={styles.content}
-      >
-        <h2 className={styles.title}>
-          Suministros <span>Eléctricos de Calidad</span>
-        </h2>
-        <p className={styles.subtitle}>La base sólida para tu infraestructura</p>
-      </motion.div>
-    </section>
-  );
-};
+    <>
+      <section className={styles.heroSection}>
+        <div className={styles.heroCard}>
+          <div className={styles.heroBackground}>
+            <div className={styles.heroGlowLeft}></div>
+            <div className={styles.heroGlowRight}></div>
+            <div className={styles.heroPattern}></div>
+          </div>
 
-export default Hero;
+          <div className={styles.heroContent}>
+            <div className={styles.heroBadge}>
+              <span className={styles.heroBadgeDot}></span>
+              Eficiencia que ilumina tu vida
+            </div>
+            <h2 className={styles.heroTitle}>
+              TECNOLOGIA LED <br />
+              Y SUMINISTROS{' '}
+              <span className={styles.heroTitleAccent}>CLEAN</span>
+            </h2>
+            <p className={styles.heroSubtitle}>
+              Soluciones de iluminacion eficientes y sustentables, materiales de
+              alto rendimiento y la mejor asesoria tecnica especializada para tus
+              proyectos.
+            </p>
+            <div className={styles.heroActions}>
+              <button
+                onClick={() => {
+                  const el = document.getElementById('catalog');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className={styles.primaryButton}
+              >
+                VER PRODUCTOS
+              </button>
+              <button className={styles.secondaryButton}>
+                <MessageCircle size={18} color="#22c55e" />
+                PEDIDOS WHATSAPP
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.featureSection}>
+        <div className={styles.featureGrid}>
+          <div className={styles.featureCard}>
+            <div className={styles.featureIcon}>
+              <Truck size={32} />
+            </div>
+            <div>
+              <h4 className={styles.featureTitle}>ENVIOS TODO EL PAIS</h4>
+              <p className={styles.featureSubtitle}>DESPACHO AGIL Y SEGURO</p>
+            </div>
+          </div>
+          <div className={styles.featureCard}>
+            <div className={styles.featureIcon}>
+              <ShieldCheck size={32} />
+            </div>
+            <div>
+              <h4 className={styles.featureTitle}>GARANTIA TECNICA</h4>
+              <p className={styles.featureSubtitle}>COMPRA CON CONFIANZA OFICIAL</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

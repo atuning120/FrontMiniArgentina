@@ -9,7 +9,7 @@ export default function Footer() {
         <div className={styles.grid}>
           <div className={styles.brand}>
             <h4>
-              ELECTRIC<span>PRO</span>
+              LED <span>CLEAN</span>
             </h4>
             <p>
               Empresa especializada en la importación y distribución técnica de componentes
@@ -69,7 +69,7 @@ export default function Footer() {
         </div>
 
         <div className={styles.bottom}>
-          <p>&copy; 2026 ELECTRICPRO SOLUTIONS. TRABAJAMOS CON LOS MEJORES.</p>
+          <p>&copy; 2026 LED CLEAN. TRABAJAMOS CON LOS MEJORES.</p>
           <span>PAGOS PROCESADOS POR MERCADO PAGO</span>
         </div>
       </div>
