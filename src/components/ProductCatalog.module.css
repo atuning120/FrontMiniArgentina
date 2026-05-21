@@ -1,5 +1,5 @@
 .catalogSection {
-	max-width: 1200px;
+	max-width: 1800px;
 	margin: 0 auto;
 	padding: 4rem 1.5rem 6rem;
 
@@ -9,6 +9,9 @@
 		flex-direction: column;
 		gap: 1rem;
 		margin-bottom: 3rem;
+		max-width: 1200px;
+		margin-left: auto;
+		margin-right: auto;
 
 		.catalogTitle {
 			font-size: clamp(2rem, 5vw, 3rem);
@@ -54,8 +57,8 @@
 
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(1, minmax(0, 1fr));
-		gap: 1.5rem;
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+		gap: 1rem;
 	}
 
 	.pagination {
@@ -72,7 +75,7 @@
 			border: 1px solid rgba(255, 255, 255, 0.1);
 			background: rgba(255, 255, 255, 0.05);
 			color: rgba(255, 255, 255, 0.7);
-			font-size: 0.6rem;
+			font-size: 0.85rem;
 			font-weight: 800;
 			text-transform: uppercase;
 			letter-spacing: 0.12em;
@@ -95,7 +98,7 @@
 			border: 1px solid rgba(255, 255, 255, 0.1);
 			background: rgba(255, 255, 255, 0.05);
 			color: rgba(255, 255, 255, 0.4);
-			font-size: 0.6rem;
+			font-size: 0.95rem;
 			font-weight: 800;
 			cursor: pointer;
 			transition: all 0.2s ease;
@@ -110,7 +113,7 @@
 
 		.paginationEllipsis {
 			color: rgba(255, 255, 255, 0.5);
-			font-size: 0.85rem;
+			font-size: 1rem;
 			padding: 0.35rem 0.4rem;
 		}
 	}
@@ -145,7 +148,7 @@
 @media (min-width: 768px) {
 	.catalogSection {
 		.grid {
-			grid-template-columns: repeat(4, minmax(0, 1fr));
+			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 		}
 	}
 }
@@ -153,7 +156,6 @@
 @media (min-width: 1024px) {
 	.catalogSection {
 		.grid {
-			grid-template-columns: repeat(4, minmax(0, 1fr));
 			gap: 2.75rem;
 		}
 	}

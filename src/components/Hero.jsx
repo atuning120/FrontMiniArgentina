@@ -1,7 +1,11 @@
-import { MessageCircle, Truck, ShieldCheck } from 'lucide-react';
+import { useState } from 'react';
+import { MessageCircle, Store, ShieldCheck } from 'lucide-react';
+import WhatsAppModal from './WhatsAppModal.jsx';
 import styles from './Hero.module.css';
 
 export default function Hero() {
+  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
+
   return (
     <>
       <section className={styles.heroSection}>
@@ -37,7 +41,10 @@ export default function Hero() {
               >
                 VER PRODUCTOS
               </button>
-              <button className={styles.secondaryButton}>
+              <button 
+                onClick={() => setIsWhatsAppModalOpen(true)}
+                className={styles.secondaryButton}
+              >
                 <MessageCircle size={18} color="#22c55e" />
                 PEDIDOS WHATSAPP
               </button>
@@ -50,10 +57,10 @@ export default function Hero() {
         <div className={styles.featureGrid}>
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>
-              <Truck size={32} />
+              <Store size={32} />
             </div>
             <div>
-              <h4 className={styles.featureTitle}>ENVIOS TODO EL PAIS</h4>
+              <h4 className={styles.featureTitle}>RETIRO EN TIENDA O LOCAL</h4>
               <p className={styles.featureSubtitle}>DESPACHO AGIL Y SEGURO</p>
             </div>
           </div>
@@ -68,6 +75,8 @@ export default function Hero() {
           </div>
         </div>
       </section>
+
+      <WhatsAppModal isOpen={isWhatsAppModalOpen} onClose={() => setIsWhatsAppModalOpen(false)} />
     </>
   );
 }

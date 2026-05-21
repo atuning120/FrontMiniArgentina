@@ -47,6 +47,16 @@ export default function ProductCatalog({
     return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredProducts, clampedCurrent]);
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    const catalogElement = document.getElementById('catalog');
+    if (catalogElement) {
+      const offset = 80;
+      const top = catalogElement.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className={styles.catalogSection} id="catalog">
       <div className={styles.catalogHeader}>
@@ -112,7 +122,7 @@ export default function ProductCatalog({
         <div className={styles.pagination}>
           <button
             disabled={clampedCurrent === 1}
-            onClick={() => setCurrentPage(Math.max(1, clampedCurrent - 1))}
+            onClick={() => handlePageChange(Math.max(1, clampedCurrent - 1))}
             className={styles.paginationButton}
           >
             Anterior
@@ -122,7 +132,7 @@ export default function ProductCatalog({
             <>
               <button
                 className={styles.paginationPageButton}
-                onClick={() => setCurrentPage(1)}
+                onClick={() => handlePageChange(1)}
               >
                 1
               </button>
@@ -135,7 +145,7 @@ export default function ProductCatalog({
           {pages.map((page) => (
             <button
               key={page}
-              onClick={() => setCurrentPage(page)}
+              onClick={() => handlePageChange(page)}
               className={`${styles.paginationPageButton} ${
                 page === clampedCurrent ? styles.paginationPageActive : ''
               }`}
@@ -151,7 +161,7 @@ export default function ProductCatalog({
               ) : null}
               <button
                 className={styles.paginationPageButton}
-                onClick={() => setCurrentPage(totalPages)}
+                onClick={() => handlePageChange(totalPages)}
               >
                 {totalPages}
               </button>
@@ -160,7 +170,7 @@ export default function ProductCatalog({
 
           <button
             disabled={clampedCurrent === totalPages}
-            onClick={() => setCurrentPage(Math.min(totalPages, clampedCurrent + 1))}
+            onClick={() => handlePageChange(Math.min(totalPages, clampedCurrent + 1))}
             className={styles.paginationButton}
           >
             Siguiente

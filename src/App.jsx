@@ -89,12 +89,19 @@ export default function App() {
   }, [products]);
 
   const filteredProducts = useMemo(() => {
+    const searchTerms = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+
     return products.filter((p) => {
-      const matchesSearch =
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const name = p.name.toLowerCase();
+      const desc = p.description.toLowerCase();
+
+      const matchesSearch = searchTerms.length === 0 || searchTerms.every(term => 
+        name.includes(term) || desc.includes(term)
+      );
+
       const matchesCategory =
         activeCategory === 'Todos' || p.category === activeCategory;
+        
       return matchesSearch && matchesCategory;
     });
   }, [products, searchQuery, activeCategory]);
@@ -210,7 +217,7 @@ export default function App() {
         />
       ) : null}
 
-      <WhatsAppButton />
+      <WhatsAppButton isCartOpen={isCartOpen} />
     </div>
   );
 }
