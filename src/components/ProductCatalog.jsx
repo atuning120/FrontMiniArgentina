@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Search } from 'lucide-react';
 import Filters from './Filters.jsx';
 import ProductCard from './ProductCard.jsx';
-import styles from '../App.module.css';
+import styles from './ProductCatalog.module.css';
 
 const MProductCard = motion(ProductCard);
 

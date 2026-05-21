@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
 import { motion } from 'motion/react';
 import ProductCard from './ProductCard.jsx';
-import styles from '../App.module.css';
+import styles from './ProductCarousel.module.css';
 
 const MProductCard = motion(ProductCard);
 
