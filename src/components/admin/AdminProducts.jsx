@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Filters from '../Filters.jsx';
-import styles from './AdminApp.module.css';
+import styles from './AdminProducts.module.css';
 
 const BASE_CATEGORIES = ['iluminacion', 'ferreteria', 'limpieza'];
 
@@ -16,6 +16,7 @@ const emptyForm = {
   porcentaje_oferta: 0,
   destacado: false,
   id_catalogo: '',
+  tamano_imagen: 'default',
 };
 
 const buildSkuFromName = (name) => {
@@ -52,7 +53,6 @@ export default function AdminProducts({ baseUrl, token }) {
   const [notice, setNotice] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('todos');
-  const [selectedSkus, setSelectedSkus] = useState(() => new Set());
 
   const headers = useMemo(
     () => ({
@@ -105,6 +105,7 @@ export default function AdminProducts({ baseUrl, token }) {
       destacado: Boolean(form.destacado),
       porcentaje_oferta: form.en_oferta && Number.isFinite(porcentaje) ? porcentaje : 0,
       id_catalogo: idCatalogo,
+      tamano_imagen: form.tamano_imagen || 'default',
     };
   };
 
@@ -184,6 +185,7 @@ export default function AdminProducts({ baseUrl, token }) {
       porcentaje_oferta: product.porcentaje_oferta ?? 0,
       destacado: Boolean(product.destacado),
       id_catalogo: product.id_catalogo ?? '',
+      tamano_imagen: product.tamano_imagen || 'default',
     });
   };
 
@@ -220,18 +222,6 @@ export default function AdminProducts({ baseUrl, token }) {
   const confirmDelete = (product) => {
     resetNotice();
     setDeleteTarget(product);
-  };
-
-  const toggleSelected = (sku) => {
-    setSelectedSkus((prev) => {
-      const next = new Set(prev);
-      if (next.has(sku)) {
-        next.delete(sku);
-      } else {
-        next.add(sku);
-      }
-      return next;
-    });
   };
 
   const cancelDelete = () => {
@@ -277,6 +267,14 @@ export default function AdminProducts({ baseUrl, token }) {
     createHasOffer && Number.isFinite(createPrice) && createPrice > 0
       ? Math.round(createPrice / (1 - createPercentage / 100))
       : null;
+
+  const getMediaClass = (tamano) => {
+    let cls = styles.productMedia;
+    if (tamano === 'square') cls += ` ${styles.mediaSquare}`;
+    else if (tamano === 'landscape') cls += ` ${styles.mediaLandscape}`;
+    else if (tamano === 'portrait') cls += ` ${styles.mediaPortrait}`;
+    return cls;
+  };
 
   const normalizedQuery = searchQuery.trim().toLowerCase();
   const filteredProducts = products.filter((product) => {
@@ -342,19 +340,7 @@ export default function AdminProducts({ baseUrl, token }) {
 
             return (
               <div key={product.sku} className={styles.productCard}>
-                <div className={styles.productMedia}>
-                  <label
-                    className={`${styles.selectWrap} ${
-                      selectedSkus.has(product.sku) ? styles.selectWrapActive : ''
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedSkus.has(product.sku)}
-                      onChange={() => toggleSelected(product.sku)}
-                    />
-                    <span className={styles.selectMark} aria-hidden="true" />
-                  </label>
+                <div className={getMediaClass(product.tamano_imagen)}>
                   {product.imagen?.trim() ? (
                     <img
                       src={product.imagen}
@@ -366,12 +352,12 @@ export default function AdminProducts({ baseUrl, token }) {
                   )}
                   <div className={styles.productBadges}>
                     {hasOffer && (
-                      <span className={`${styles.badge} ${styles.badgeOffer}`}>
+                      <span className={styles.badgeOffer}>
                         Oferta {percentage}%
                       </span>
                     )}
                     {product.destacado && (
-                      <span className={`${styles.badge} ${styles.badgeFeatured}`}>
+                      <span className={styles.badgeFeatured}>
                         Destacado
                       </span>
                     )}
@@ -381,30 +367,31 @@ export default function AdminProducts({ baseUrl, token }) {
                     <button onClick={() => startEdit(product)} className={styles.overlayBtn}>
                       Editar
                     </button>
-                    <button
-                      onClick={() => confirmDelete(product)}
-                      className={`${styles.overlayBtn} ${styles.overlayBtnDanger}`}
-                    >
+                    <button onClick={() => confirmDelete(product)} className={`${styles.overlayBtn} ${styles.overlayBtnDanger}`}>
                       Eliminar
                     </button>
                   </div>
                 </div>
-                
+                  
                 <div className={styles.productContent}>
                   <span className={styles.productTag}>{product.categoria}</span>
-                  <h4 className={styles.productTitle}>{product.nombre}</h4>
+                  <div className={styles.productHeadline}>
+                    <h4 className={styles.productTitle}>{product.nombre}</h4>
+                  </div>
                   <p className={styles.productDesc}>
                     {product.descripcion?.substring(0, 80)}
                     {product.descripcion?.length > 80 ? '...' : ''}
                   </p>
                   
-                  <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-                    <span className={styles.productPrice}>${product.precio?.toLocaleString()}</span>
-                    {hasOffer && oldPrice && (
-                      <span style={{ fontSize: '0.8rem', textDecoration: 'line-through', color: 'rgba(255,255,255,0.45)' }}>
-                        ${oldPrice.toLocaleString()}
-                      </span>
-                    )}
+                  <div className={styles.productActions}>
+                    <div className={styles.priceStack}>
+                      <span className={styles.productPrice}>${product.precio?.toLocaleString('es-AR')}</span>
+                      {hasOffer && oldPrice && (
+                        <span className={styles.oldPrice}>
+                          ${oldPrice.toLocaleString('es-AR')}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -419,7 +406,7 @@ export default function AdminProducts({ baseUrl, token }) {
 
               <div className={styles.modalPreview}>
                 <div className={`${styles.productCard} ${styles.modalPreviewCard}`}>
-                  <div className={styles.productMedia}>
+                  <div className={getMediaClass(editForm.tamano_imagen)}>
                     {editForm.imagen?.trim() ? (
                       <img
                         src={editForm.imagen}
@@ -431,12 +418,12 @@ export default function AdminProducts({ baseUrl, token }) {
                     )}
                     <div className={styles.productBadges}>
                       {editHasOffer && (
-                        <span className={`${styles.badge} ${styles.badgeOffer}`}>
+                        <span className={styles.badgeOffer}>
                           Oferta {editPercentage}%
                         </span>
                       )}
                       {editForm.destacado && (
-                        <span className={`${styles.badge} ${styles.badgeFeatured}`}>
+                        <span className={styles.badgeFeatured}>
                           Destacado
                         </span>
                       )}
@@ -447,9 +434,11 @@ export default function AdminProducts({ baseUrl, token }) {
                     <span className={styles.productTag}>
                       {editForm.categoria || BASE_CATEGORIES[0]}
                     </span>
-                    <h4 className={styles.productTitle}>
-                      {editForm.nombre || 'Nombre del producto'}
-                    </h4>
+                    <div className={styles.productHeadline}>
+                      <h4 className={styles.productTitle}>
+                        {editForm.nombre || 'Nombre del producto'}
+                      </h4>
+                    </div>
                     <p className={styles.productDesc}>
                       {editForm.descripcion
                         ? editForm.descripcion.substring(0, 90)
@@ -457,15 +446,17 @@ export default function AdminProducts({ baseUrl, token }) {
                       {editForm.descripcion?.length > 90 ? '...' : ''}
                     </p>
 
-                    <div className={styles.previewPriceRow}>
-                      <span className={styles.productPrice}>
-                        ${Number(editForm.precio || 0).toLocaleString()}
-                      </span>
-                      {editHasOffer && editOldPrice && (
-                        <span className={styles.previewOldPrice}>
-                          ${editOldPrice.toLocaleString()}
+                    <div className={styles.productActions}>
+                      <div className={styles.priceStack}>
+                        <span className={styles.productPrice}>
+                          ${Number(editForm.precio || 0).toLocaleString('es-AR')}
                         </span>
-                      )}
+                        {editHasOffer && editOldPrice && (
+                          <span className={styles.oldPrice}>
+                            ${editOldPrice.toLocaleString('es-AR')}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -508,6 +499,22 @@ export default function AdminProducts({ baseUrl, token }) {
                   </label>
 
                   <label className={styles.label}>
+                    Tamaño Imagen
+                    <select
+                      value={editForm.tamano_imagen}
+                      onChange={(event) =>
+                        setEditForm((prev) => ({ ...prev, tamano_imagen: event.target.value }))
+                      }
+                      className={styles.input}
+                    >
+                      <option value="default">Por defecto (4:3)</option>
+                      <option value="square">Cuadrado (1:1)</option>
+                      <option value="landscape">Horizontal (16:9)</option>
+                      <option value="portrait">Vertical (3:4)</option>
+                    </select>
+                  </label>
+
+                  <label className={styles.label}>
                     Precio
                     <input
                       type="number"
@@ -545,33 +552,38 @@ export default function AdminProducts({ baseUrl, token }) {
                     />
                   </label>
 
-                  <div style={{ 
-                    gridColumn: '1 / -1', 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', 
-                    gap: '1rem', 
-                    padding: '1.25rem', 
-                    background: 'rgba(255,255,255,0.03)', 
-                    borderRadius: '1rem', 
-                    border: '1px solid rgba(255,255,255,0.05)',
-                    marginTop: '0.5rem',
-                    marginBottom: '0.5rem'
-                  }}>
-                    <label className={styles.checkbox}>
-                      <input
-                        type="checkbox"
-                        checked={editForm.en_oferta}
-                        onChange={(event) =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            en_oferta: event.target.checked,
-                          }))
-                        }
-                      />
-                      En oferta
-                    </label>
-                    <label className={styles.label}>
-                      Porcentaje oferta
+                  <div className={styles.checkboxGroup}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <label className={styles.checkbox} style={{ margin: 0 }}>
+                        <input
+                          type="checkbox"
+                          checked={editForm.en_oferta}
+                          onChange={(event) =>
+                            setEditForm((prev) => ({
+                              ...prev,
+                              en_oferta: event.target.checked,
+                            }))
+                          }
+                        />
+                        En oferta
+                      </label>
+                      <label className={styles.checkbox} style={{ margin: 0 }}>
+                        <input
+                          type="checkbox"
+                          checked={editForm.destacado}
+                          onChange={(event) =>
+                            setEditForm((prev) => ({
+                              ...prev,
+                              destacado: event.target.checked,
+                            }))
+                          }
+                        />
+                        Destacado
+                      </label>
+                    </div>
+
+                    <label className={styles.label} style={{ marginLeft: 'auto', opacity: editForm.en_oferta ? 1 : 0.5 }}>
+                      Porcentaje oferta (%)
                       <input
                         type="number"
                         value={editForm.porcentaje_oferta}
@@ -583,20 +595,8 @@ export default function AdminProducts({ baseUrl, token }) {
                         }
                         className={styles.input}
                         disabled={!editForm.en_oferta}
+                        style={{ width: '140px' }}
                       />
-                    </label>
-                    <label className={styles.checkbox}>
-                      <input
-                        type="checkbox"
-                        checked={editForm.destacado}
-                        onChange={(event) =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            destacado: event.target.checked,
-                          }))
-                        }
-                      />
-                      Destacado
                     </label>
                   </div>
 
@@ -643,7 +643,7 @@ export default function AdminProducts({ baseUrl, token }) {
 
               <div className={styles.modalPreview}>
                 <div className={`${styles.productCard} ${styles.modalPreviewCard}`}>
-                  <div className={styles.productMedia}>
+                  <div className={getMediaClass(createForm.tamano_imagen)}>
                     {createForm.imagen?.trim() ? (
                       <img
                         src={createForm.imagen}
@@ -655,12 +655,12 @@ export default function AdminProducts({ baseUrl, token }) {
                     )}
                     <div className={styles.productBadges}>
                       {createHasOffer && (
-                        <span className={`${styles.badge} ${styles.badgeOffer}`}>
+                        <span className={styles.badgeOffer}>
                           Oferta {createPercentage}%
                         </span>
                       )}
                       {createForm.destacado && (
-                        <span className={`${styles.badge} ${styles.badgeFeatured}`}>
+                        <span className={styles.badgeFeatured}>
                           Destacado
                         </span>
                       )}
@@ -671,9 +671,11 @@ export default function AdminProducts({ baseUrl, token }) {
                     <span className={styles.productTag}>
                       {createForm.categoria || BASE_CATEGORIES[0]}
                     </span>
-                    <h4 className={styles.productTitle}>
-                      {createForm.nombre || 'Nombre del producto'}
-                    </h4>
+                    <div className={styles.productHeadline}>
+                      <h4 className={styles.productTitle}>
+                        {createForm.nombre || 'Nombre del producto'}
+                      </h4>
+                    </div>
                     <p className={styles.productDesc}>
                       {createForm.descripcion
                         ? createForm.descripcion.substring(0, 90)
@@ -681,15 +683,17 @@ export default function AdminProducts({ baseUrl, token }) {
                       {createForm.descripcion?.length > 90 ? '...' : ''}
                     </p>
 
-                    <div className={styles.previewPriceRow}>
-                      <span className={styles.productPrice}>
-                        ${Number(createForm.precio || 0).toLocaleString()}
-                      </span>
-                      {createHasOffer && createOldPrice && (
-                        <span className={styles.previewOldPrice}>
-                          ${createOldPrice.toLocaleString()}
+                    <div className={styles.productActions}>
+                      <div className={styles.priceStack}>
+                        <span className={styles.productPrice}>
+                          ${Number(createForm.precio || 0).toLocaleString('es-AR')}
                         </span>
-                      )}
+                        {createHasOffer && createOldPrice && (
+                          <span className={styles.oldPrice}>
+                            ${createOldPrice.toLocaleString('es-AR')}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -747,6 +751,22 @@ export default function AdminProducts({ baseUrl, token }) {
                   </label>
 
                   <label className={styles.label}>
+                    Tamaño Imagen
+                    <select
+                      value={createForm.tamano_imagen}
+                      onChange={(event) =>
+                        setCreateForm((prev) => ({ ...prev, tamano_imagen: event.target.value }))
+                      }
+                      className={styles.input}
+                    >
+                      <option value="default">Por defecto (4:3)</option>
+                      <option value="square">Cuadrado (1:1)</option>
+                      <option value="landscape">Horizontal (16:9)</option>
+                      <option value="portrait">Vertical (3:4)</option>
+                    </select>
+                  </label>
+
+                  <label className={styles.label}>
                     Precio
                     <input
                       type="number"
@@ -782,35 +802,38 @@ export default function AdminProducts({ baseUrl, token }) {
                     />
                   </label>
 
-                  <div
-                    style={{
-                      gridColumn: '1 / -1',
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                      gap: '1rem',
-                      padding: '1.25rem',
-                      background: 'rgba(255,255,255,0.03)',
-                      borderRadius: '1rem',
-                      border: '1px solid rgba(255,255,255,0.05)',
-                      marginTop: '0.5rem',
-                      marginBottom: '0.5rem',
-                    }}
-                  >
-                    <label className={styles.checkbox}>
-                      <input
-                        type="checkbox"
-                        checked={createForm.en_oferta}
-                        onChange={(event) =>
-                          setCreateForm((prev) => ({
-                            ...prev,
-                            en_oferta: event.target.checked,
-                          }))
-                        }
-                      />
-                      En oferta
-                    </label>
-                    <label className={styles.label}>
-                      Porcentaje oferta
+                  <div className={styles.checkboxGroup}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <label className={styles.checkbox} style={{ margin: 0 }}>
+                        <input
+                          type="checkbox"
+                          checked={createForm.en_oferta}
+                          onChange={(event) =>
+                            setCreateForm((prev) => ({
+                              ...prev,
+                              en_oferta: event.target.checked,
+                            }))
+                          }
+                        />
+                        En oferta
+                      </label>
+                      <label className={styles.checkbox} style={{ margin: 0 }}>
+                        <input
+                          type="checkbox"
+                          checked={createForm.destacado}
+                          onChange={(event) =>
+                            setCreateForm((prev) => ({
+                              ...prev,
+                              destacado: event.target.checked,
+                            }))
+                          }
+                        />
+                        Destacado
+                      </label>
+                    </div>
+
+                    <label className={styles.label} style={{ marginLeft: 'auto', opacity: createForm.en_oferta ? 1 : 0.5 }}>
+                      Porcentaje oferta (%)
                       <input
                         type="number"
                         value={createForm.porcentaje_oferta}
@@ -822,20 +845,8 @@ export default function AdminProducts({ baseUrl, token }) {
                         }
                         className={styles.input}
                         disabled={!createForm.en_oferta}
+                        style={{ width: '140px' }}
                       />
-                    </label>
-                    <label className={styles.checkbox}>
-                      <input
-                        type="checkbox"
-                        checked={createForm.destacado}
-                        onChange={(event) =>
-                          setCreateForm((prev) => ({
-                            ...prev,
-                            destacado: event.target.checked,
-                          }))
-                        }
-                      />
-                      Destacado
                     </label>
                   </div>
 

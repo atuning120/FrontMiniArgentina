@@ -18,6 +18,11 @@ const ProductCard = forwardRef(({
     discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
   }
 
+  let mediaClass = styles.media;
+  if (product.tamano_imagen === 'square') mediaClass += ` ${styles.mediaSquare}`;
+  else if (product.tamano_imagen === 'landscape') mediaClass += ` ${styles.mediaLandscape}`;
+  else if (product.tamano_imagen === 'portrait') mediaClass += ` ${styles.mediaPortrait}`;
+
   return (
     <div
       ref={ref}
@@ -32,7 +37,7 @@ const ProductCard = forwardRef(({
       }}
       {...props}
     >
-      <div className={styles.media}>
+      <div className={mediaClass}>
         {product.image?.trim() ? (
           <img
             src={product.image}

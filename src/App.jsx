@@ -56,6 +56,7 @@ export default function App() {
             category: normalizedCategory || baseCategories[0],
             image: item.imagen || '/logonn-modified.png',
             featured: Boolean(item.destacado),
+            tamano_imagen: item.tamano_imagen || 'default',
             raw: item,
           };
         });

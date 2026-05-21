@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from './AdminApp.module.css';
+import styles from './AdminLogin.module.css';
 
 export default function AdminLogin({ baseUrl, onSuccess }) {
   const [username, setUsername] = useState('');

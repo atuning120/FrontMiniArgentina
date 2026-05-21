@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import styles from './AdminApp.module.css';
+import styles from './AdminOrderForm.module.css';
 
 export default function AdminOrderForm({ baseUrl, token }) {
   const [products, setProducts] = useState([]);
@@ -23,6 +23,7 @@ export default function AdminOrderForm({ baseUrl, token }) {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [totalOverride, setTotalOverride] = useState('');
+  const [modalState, setModalState] = useState({ isOpen: false, type: '', message: '' });
 
   const headers = useMemo(
     () => ({
@@ -108,6 +109,12 @@ export default function AdminOrderForm({ baseUrl, token }) {
     totalOverride !== '' && Number.isFinite(parsedTotalOverride);
   const total = hasTotalOverride ? parsedTotalOverride : computedTotal;
 
+  const hasItems = normalizedItems.filter(item => item.quantity > 0).length > 0;
+  const isCustomerNameValid = customerName.trim().length > 0;
+  const cleanedPhone = customerPhone.replace(/\D/g, '');
+  const isCustomerPhoneValid = cleanedPhone.length >= 10 && cleanedPhone.length <= 13;
+  const isFormValid = hasItems && isCustomerNameValid && isCustomerPhoneValid;
+
   const handleItemChange = (index, key, value) => {
     setItems((prev) =>
       prev.map((item, idx) => {
@@ -175,7 +182,7 @@ export default function AdminOrderForm({ baseUrl, token }) {
 
     const payloadItems = normalizedItems.filter((item) => item.quantity > 0);
     if (payloadItems.length === 0) {
-      setNotice('Agrega al menos un item valido.');
+      setModalState({ isOpen: true, type: 'error', message: 'Agrega al menos un item valido.' });
       return;
     }
 
@@ -204,7 +211,7 @@ export default function AdminOrderForm({ baseUrl, token }) {
       });
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || 'Error al crear la orden');
+        throw new Error(data.error || 'Error al crear la orden. Puede que haya un problema en el backend o base de datos.');
       }
       setItems([
         {
@@ -224,9 +231,9 @@ export default function AdminOrderForm({ baseUrl, token }) {
       setIvaEnabled(true);
       setIvaRate(21);
       setTotalOverride('');
-      setNotice('Orden creada.');
+      setModalState({ isOpen: true, type: 'success', message: 'Orden creada exitosamente.' });
     } catch (error) {
-      setNotice(error.message || 'Error al crear la orden');
+      setModalState({ isOpen: true, type: 'error', message: error.message || 'Error desconocido al crear la orden.' });
     }
   };
 
@@ -323,7 +330,7 @@ export default function AdminOrderForm({ baseUrl, token }) {
           <h3 className={styles.orderBlockTitle}>Datos del cliente</h3>
           <div className={styles.formGrid}>
           <label className={styles.label}>
-            Nombre del cliente
+            <span>Nombre del cliente <span style={{ color: '#f97316' }}>*</span></span>
             <input
               value={customerName}
               onChange={(event) => setCustomerName(event.target.value)}
@@ -332,7 +339,7 @@ export default function AdminOrderForm({ baseUrl, token }) {
             />
           </label>
           <label className={styles.label}>
-            Telefono del cliente
+            <span>Telefono del cliente <span style={{ color: '#f97316' }}>*</span></span>
             <input
               value={customerPhone}
               onChange={(event) => setCustomerPhone(event.target.value)}
@@ -345,7 +352,9 @@ export default function AdminOrderForm({ baseUrl, token }) {
 
         <form onSubmit={handleSubmit}>
           <div className={styles.orderBlock}>
-            <h3 className={styles.orderBlockTitle}>Items de la orden</h3>
+            <h3 className={styles.orderBlockTitle}>
+              Items de la orden <span style={{ color: '#f97316' }}>*</span>
+            </h3>
           <div className={styles.orderItems}>
             <div className={styles.orderRowHeader}>
               <span className={styles.orderHeaderCell}>
@@ -408,13 +417,23 @@ export default function AdminOrderForm({ baseUrl, token }) {
                   }
                   className={`${styles.input} ${styles.orderQuantityInput}`}
                 />
-                <div className={styles.priceInputWrap}>
+                <div className={styles.priceInputWrap} style={{ justifyContent: 'center' }}>
                   <span className={styles.pricePrefix}>$</span>
                   <input
                     type="text"
                     inputMode="decimal"
                     value={formatNumber(resolvedPrice)}
-                    className={styles.input}
+                    style={{ 
+                      opacity: 0.7, 
+                      fontWeight: 'normal', 
+                      background: 'transparent', 
+                      border: 'none', 
+                      outline: 'none',
+                      color: 'var(--text)',
+                      fontSize: '1rem',
+                      width: '80px',
+                      textAlign: 'center'
+                    }}
                     placeholder="Precio unitario"
                     disabled
                   />
@@ -436,8 +455,9 @@ export default function AdminOrderForm({ baseUrl, token }) {
                         parseNumberInput(event.target.value)
                       )
                     }
-                    className={styles.orderSummaryInput}
+                    className={styles.input}
                     placeholder="Total item"
+                    style={{ fontWeight: 'bold', width: '100px' }}
                   />
                 </div>
                 <button
@@ -509,7 +529,7 @@ export default function AdminOrderForm({ baseUrl, token }) {
               <div className={styles.orderSummary}>
                 <span>Total</span>
                 <div className={styles.priceInputWrap}>
-                  <span className={styles.pricePrefix}>$</span>
+                  <span className={styles.pricePrefix} style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>$</span>
                   <input
                     type="text"
                     inputMode="decimal"
@@ -521,19 +541,55 @@ export default function AdminOrderForm({ baseUrl, token }) {
                     onChange={(event) =>
                       setTotalOverride(parseNumberInput(event.target.value))
                     }
-                    className={styles.orderSummaryInput}
+                    className={styles.input}
+                    style={{ fontWeight: 'bold', fontSize: '1.1rem', width: '140px', color: 'var(--accent-400)' }}
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <button type="submit" className={styles.primary}>
+          <button 
+            type="submit" 
+            className={styles.primary} 
+            style={{ marginTop: '2.5rem' }}
+            disabled={!isFormValid}
+          >
             Crear orden
           </button>
         </form>
         {notice ? <p className={styles.notice}>{notice}</p> : null}
       </div>
+
+      {modalState.isOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            {modalState.type === 'error' ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '4rem', height: '4rem', margin: '0 auto' }}>
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '4rem', height: '4rem', margin: '0 auto' }}>
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+            )}
+            <h3 className={modalState.type === 'error' ? styles.modalError : styles.modalSuccess}>
+              {modalState.type === 'error' ? 'Error al crear' : 'Operación exitosa'}
+            </h3>
+            <p className={styles.modalMessage}>{modalState.message}</p>
+            <button 
+              className={styles.primary} 
+              onClick={() => setModalState({ isOpen: false, type: '', message: '' })}
+              style={{ marginTop: '1rem' }}
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

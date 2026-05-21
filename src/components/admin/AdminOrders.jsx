@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import styles from './AdminApp.module.css';
+import styles from './AdminOrders.module.css';
 
 export default function AdminOrders({ baseUrl, token }) {
   const [orders, setOrders] = useState([]);

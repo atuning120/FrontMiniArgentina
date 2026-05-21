@@ -32,6 +32,9 @@
 		overflow: hidden;
 		background: rgba(0, 0, 0, 0.4);
 		height: clamp(180px, 24vw, 220px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
 		img {
 			width: 100%;
@@ -40,6 +43,24 @@
 			opacity: 0.7;
 			transition: transform 0.7s ease, opacity 0.7s ease;
 		}
+	}
+
+	.mediaSquare img {
+		width: auto;
+		height: 100%;
+		aspect-ratio: 1 / 1;
+	}
+
+	.mediaLandscape img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+	}
+
+	.mediaPortrait img {
+		width: auto;
+		height: 100%;
+		aspect-ratio: 3 / 4;
 	}
 
 	.noImage {

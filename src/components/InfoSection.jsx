@@ -4,7 +4,7 @@ import styles from './InfoSection.module.css';
 export default function InfoSection() {
   const steps = [
     { icon: ClipboardList, title: '1. COTIZA', sub: 'REVISA EL CATÁLOGO' },
-    { icon: ShoppingCart, title: '2. AL CARRITO', sub: 'ARMA TU PEDIDO' },
+    { icon: ShoppingCart, title: '2. ARMA TU CARRITO', sub: 'AGREGA LOS PRODUCTOS QUE NECESITAS' },
     { icon: MessageCircle, title: '3. WHATSAPP', sub: 'CONFIRMA DETALLES' },
     { icon: CreditCard, title: '4. PAGA', sub: 'MERCADO PAGO O TRANSFERENCIA' },
     { icon: Store, title: '5. RETIRA', sub: 'LISTO PARA LLEVAR' },

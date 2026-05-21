@@ -167,6 +167,8 @@
 	padding: 0 1.5rem 1.5rem;
 
 	.featureGrid {
+		max-width: 1600px;
+		margin: 0 auto;
 		background: var(--obsidian);
 		border-radius: 1.75rem;
 		padding: 0.5rem;
