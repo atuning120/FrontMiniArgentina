@@ -302,51 +302,51 @@ export default function AdminOrderForm({ baseUrl, token }) {
         <div className={styles.orderBlock}>
           <h3 className={styles.orderBlockTitle}>Codigo del carrito</h3>
           <div className={styles.formGrid}>
-          <label className={styles.label} style={{ gridColumn: '1 / -1' }}>
-            Codigo base64 (desde WhatsApp)
-            <textarea
-              value={base64Input}
-              onChange={(event) => setBase64Input(event.target.value)}
-              rows={3}
-              className={styles.textarea}
-              placeholder="Pega aqui el codigo base64..."
-            />
-          </label>
-          <div className={styles.orderInlineActions}>
-            <button
-              type="button"
-              className={styles.secondary}
-              onClick={handleResolveBase64}
-              disabled={isResolving}
-            >
-              {isResolving ? 'Resolviendo...' : 'Convertir codigo'}
-            </button>
-          </div>
-          {resolveError ? <p className={styles.error}>{resolveError}</p> : null}
+            <label className={styles.label} style={{ gridColumn: '1 / -1' }}>
+              (desde WhatsApp)
+              <textarea
+                value={base64Input}
+                onChange={(event) => setBase64Input(event.target.value)}
+                rows={3}
+                className={styles.textarea}
+                placeholder="Pega aqui el codigo ..."
+              />
+            </label>
+            <div className={styles.orderInlineActions}>
+              <button
+                type="button"
+                className={styles.secondary}
+                onClick={handleResolveBase64}
+                disabled={isResolving}
+              >
+                {isResolving ? 'Resolviendo...' : 'Convertir codigo'}
+              </button>
+            </div>
+            {resolveError ? <p className={styles.error}>{resolveError}</p> : null}
           </div>
         </div>
 
         <div className={styles.orderBlock}>
           <h3 className={styles.orderBlockTitle}>Datos del cliente</h3>
           <div className={styles.formGrid}>
-          <label className={styles.label}>
-            <span>Nombre del cliente <span style={{ color: '#f97316' }}>*</span></span>
-            <input
-              value={customerName}
-              onChange={(event) => setCustomerName(event.target.value)}
-              className={styles.input}
-              placeholder="Nombre y apellido"
-            />
-          </label>
-          <label className={styles.label}>
-            <span>Telefono del cliente <span style={{ color: '#f97316' }}>*</span></span>
-            <input
-              value={customerPhone}
-              onChange={(event) => setCustomerPhone(event.target.value)}
-              className={styles.input}
-              placeholder="Ej: +54 9 11 1234 5678"
-            />
-          </label>
+            <label className={styles.label}>
+              <span>Nombre del cliente <span style={{ color: '#f97316' }}>*</span></span>
+              <input
+                value={customerName}
+                onChange={(event) => setCustomerName(event.target.value)}
+                className={styles.input}
+                placeholder="Nombre y apellido"
+              />
+            </label>
+            <label className={styles.label}>
+              <span>Telefono del cliente <span style={{ color: '#f97316' }}>*</span></span>
+              <input
+                value={customerPhone}
+                onChange={(event) => setCustomerPhone(event.target.value)}
+                className={styles.input}
+                placeholder="Ej: +54 9 11 1234 5678"
+              />
+            </label>
           </div>
         </div>
 
@@ -355,129 +355,129 @@ export default function AdminOrderForm({ baseUrl, token }) {
             <h3 className={styles.orderBlockTitle}>
               Items de la orden <span style={{ color: '#f97316' }}>*</span>
             </h3>
-          <div className={styles.orderItems}>
-            <div className={styles.orderRowHeader}>
-              <span className={styles.orderHeaderCell}>
-                Producto
-              </span>
-              <span className={styles.orderHeaderCell}>
-                Cantidad
-              </span>
-              <span className={styles.orderHeaderCell}>
-                Precio unitario
-              </span>
-              <span className={styles.orderHeaderCell}>
-                Total item
-              </span>
-              <span className={styles.orderHeaderCell}>
-                Acciones
-              </span>
-            </div>
-            {items.map((item, index) => (
-              <div key={`${item.sku}-${index}`} className={styles.orderRow}>
-                {(() => {
-                  const product = productMap.get(item.sku);
-                  const quantity = Number(item.quantity) || 0;
-                  const price = Number(item.price);
-                  const resolvedPrice = Number.isFinite(price)
-                    ? price
-                    : Number(product?.precio) || 0;
-                  const lineTotalValue = Number(item.lineTotal);
-                  const resolvedLineTotal =
-                    item.lineTotalManual && Number.isFinite(lineTotalValue)
-                      ? lineTotalValue
-                      : resolvedPrice * quantity;
-
-                  return (
-                    <>
-                <select
-                  value={item.sku}
-                  onChange={(event) =>
-                    handleItemChange(index, 'sku', event.target.value)
-                  }
-                  className={styles.input}
-                >
-                  <option value="">Seleccionar producto</option>
-                  {products.map((product) => (
-                    <option key={product.sku} value={product.sku}>
-                      {product.nombre} ({product.sku})
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={formatNumber(item.quantity)}
-                  onChange={(event) =>
-                    handleItemChange(
-                      index,
-                      'quantity',
-                      parseNumberInput(event.target.value)
-                    )
-                  }
-                  className={`${styles.input} ${styles.orderQuantityInput}`}
-                />
-                <div className={styles.priceInputWrap} style={{ justifyContent: 'center' }}>
-                  <span className={styles.pricePrefix}>$</span>
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    value={formatNumber(resolvedPrice)}
-                    style={{ 
-                      opacity: 0.7, 
-                      fontWeight: 'normal', 
-                      background: 'transparent', 
-                      border: 'none', 
-                      outline: 'none',
-                      color: 'var(--text)',
-                      fontSize: '1rem',
-                      width: '80px',
-                      textAlign: 'center'
-                    }}
-                    placeholder="Precio unitario"
-                    disabled
-                  />
-                </div>
-                <div className={styles.priceInputWrap}>
-                  <span className={styles.pricePrefix}>$</span>
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    value={
-                      item.lineTotalManual
-                        ? formatNumber(item.lineTotal)
-                        : formatNumber(resolvedLineTotal)
-                    }
-                    onChange={(event) =>
-                      handleItemChange(
-                        index,
-                        'lineTotal',
-                        parseNumberInput(event.target.value)
-                      )
-                    }
-                    className={styles.input}
-                    placeholder="Total item"
-                    style={{ fontWeight: 'bold', width: '100px' }}
-                  />
-                </div>
-                <button
-                  type="button"
-                  className={styles.secondary}
-                  onClick={() => removeItem(index)}
-                  disabled={items.length === 1}
-                >
-                  Quitar
-                </button>
-                    </>
-                  );
-                })()}
+            <div className={styles.orderItems}>
+              <div className={styles.orderRowHeader}>
+                <span className={styles.orderHeaderCell}>
+                  Producto
+                </span>
+                <span className={styles.orderHeaderCell}>
+                  Cantidad
+                </span>
+                <span className={styles.orderHeaderCell}>
+                  Precio unitario
+                </span>
+                <span className={styles.orderHeaderCell}>
+                  Total item
+                </span>
+                <span className={styles.orderHeaderCell}>
+                  Acciones
+                </span>
               </div>
-            ))}
-          </div>
+              {items.map((item, index) => (
+                <div key={`${item.sku}-${index}`} className={styles.orderRow}>
+                  {(() => {
+                    const product = productMap.get(item.sku);
+                    const quantity = Number(item.quantity) || 0;
+                    const price = Number(item.price);
+                    const resolvedPrice = Number.isFinite(price)
+                      ? price
+                      : Number(product?.precio) || 0;
+                    const lineTotalValue = Number(item.lineTotal);
+                    const resolvedLineTotal =
+                      item.lineTotalManual && Number.isFinite(lineTotalValue)
+                        ? lineTotalValue
+                        : resolvedPrice * quantity;
 
-          <button type="button" className={styles.secondary} onClick={addItem}>
-            Agregar item
-          </button>
+                    return (
+                      <>
+                        <select
+                          value={item.sku}
+                          onChange={(event) =>
+                            handleItemChange(index, 'sku', event.target.value)
+                          }
+                          className={styles.input}
+                        >
+                          <option value="">Seleccionar producto</option>
+                          {products.map((product) => (
+                            <option key={product.sku} value={product.sku}>
+                              {product.nombre} ({product.sku})
+                            </option>
+                          ))}
+                        </select>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={formatNumber(item.quantity)}
+                          onChange={(event) =>
+                            handleItemChange(
+                              index,
+                              'quantity',
+                              parseNumberInput(event.target.value)
+                            )
+                          }
+                          className={`${styles.input} ${styles.orderQuantityInput}`}
+                        />
+                        <div className={styles.priceInputWrap} style={{ justifyContent: 'center' }}>
+                          <span className={styles.pricePrefix}>$</span>
+                          <input
+                            type="text"
+                            inputMode="decimal"
+                            value={formatNumber(resolvedPrice)}
+                            style={{
+                              opacity: 0.7,
+                              fontWeight: 'normal',
+                              background: 'transparent',
+                              border: 'none',
+                              outline: 'none',
+                              color: 'var(--text)',
+                              fontSize: '1rem',
+                              width: '80px',
+                              textAlign: 'center'
+                            }}
+                            placeholder="Precio unitario"
+                            disabled
+                          />
+                        </div>
+                        <div className={styles.priceInputWrap}>
+                          <span className={styles.pricePrefix}>$</span>
+                          <input
+                            type="text"
+                            inputMode="decimal"
+                            value={
+                              item.lineTotalManual
+                                ? formatNumber(item.lineTotal)
+                                : formatNumber(resolvedLineTotal)
+                            }
+                            onChange={(event) =>
+                              handleItemChange(
+                                index,
+                                'lineTotal',
+                                parseNumberInput(event.target.value)
+                              )
+                            }
+                            className={styles.input}
+                            placeholder="Total item"
+                            style={{ fontWeight: 'bold', width: '100px' }}
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.secondary}
+                          onClick={() => removeItem(index)}
+                          disabled={items.length === 1}
+                        >
+                          Quitar
+                        </button>
+                      </>
+                    );
+                  })()}
+                </div>
+              ))}
+            </div>
+
+            <button type="button" className={styles.secondary} onClick={addItem}>
+              Agregar item
+            </button>
           </div>
 
           <div className={styles.orderSideBySide}>
@@ -549,9 +549,9 @@ export default function AdminOrderForm({ baseUrl, token }) {
             </div>
           </div>
 
-          <button 
-            type="submit" 
-            className={styles.primary} 
+          <button
+            type="submit"
+            className={styles.primary}
             style={{ marginTop: '2.5rem' }}
             disabled={!isFormValid}
           >
@@ -580,8 +580,8 @@ export default function AdminOrderForm({ baseUrl, token }) {
               {modalState.type === 'error' ? 'Error al crear' : 'Operación exitosa'}
             </h3>
             <p className={styles.modalMessage}>{modalState.message}</p>
-            <button 
-              className={styles.primary} 
+            <button
+              className={styles.primary}
               onClick={() => setModalState({ isOpen: false, type: '', message: '' })}
               style={{ marginTop: '1rem' }}
             >

@@ -49,6 +49,11 @@ select {
     border-color: var(--accent-500);
     background: rgba(255, 255, 255, 0.08);
   }
+
+  & option {
+    background: #0f172a;
+    color: #ffffff;
+  }
 }
 
 .textarea {
