@@ -276,13 +276,12 @@ export default function AdminProducts({ baseUrl, token }) {
     return cls;
   };
 
-  const normalizedQuery = searchQuery.trim().toLowerCase();
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
       activeCategory === 'todos' || product.categoria === activeCategory;
     if (!matchesCategory) return false;
 
-    if (!normalizedQuery) return true;
+    if (!searchQuery.trim()) return true;
 
     const searchable = [
       product.nombre,
@@ -291,11 +290,48 @@ export default function AdminProducts({ baseUrl, token }) {
       product.categoria,
     ]
       .filter(Boolean)
-      .join(' ')
-      .toLowerCase();
+      .join(' ');
 
-    return searchable.includes(normalizedQuery);
+    const terms = searchQuery.trim().split(/\s+/).filter(Boolean);
+    
+    const regexes = terms.map((term) => {
+      try {
+        return new RegExp(term, 'i');
+      } catch (e) {
+        return new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      }
+    });
+
+    return regexes.every((regex) => regex.test(searchable));
   });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, activeCategory]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / itemsPerPage));
+  const maxButtons = 5;
+  const clampedCurrent = Math.max(1, Math.min(currentPage, totalPages));
+  const startPage = Math.max(1, clampedCurrent - Math.floor(maxButtons / 2));
+  const endPage = Math.min(totalPages, startPage + maxButtons - 1);
+  const pageStart = Math.max(1, endPage - maxButtons + 1);
+  const pages = [];
+  for (let page = pageStart; page <= endPage; page += 1) {
+    pages.push(page);
+  }
+
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (clampedCurrent - 1) * itemsPerPage;
+    return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredProducts, clampedCurrent]);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <section className={styles.section}>
@@ -331,7 +367,7 @@ export default function AdminProducts({ baseUrl, token }) {
         ) : null}
 
         <div className={styles.productsGrid}>
-          {filteredProducts.map((product) => {
+          {paginatedProducts.map((product) => {
             const percentage = Number(product.porcentaje_oferta || 0);
             const hasOffer = Boolean(product.en_oferta) && percentage > 0;
             const oldPrice = hasOffer
@@ -398,6 +434,66 @@ export default function AdminProducts({ baseUrl, token }) {
             );
           })}
         </div>
+
+        {totalPages > 1 && (
+          <div className={styles.pagination}>
+            <button
+              disabled={clampedCurrent === 1}
+              onClick={() => handlePageChange(Math.max(1, clampedCurrent - 1))}
+              className={styles.paginationButton}
+            >
+              Anterior
+            </button>
+
+            {pageStart > 1 ? (
+              <>
+                <button
+                  className={styles.paginationPageButton}
+                  onClick={() => handlePageChange(1)}
+                >
+                  1
+                </button>
+                {pageStart > 2 ? (
+                  <span className={styles.paginationEllipsis}>...</span>
+                ) : null}
+              </>
+            ) : null}
+
+            {pages.map((page) => (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`${styles.paginationPageButton} ${
+                  page === clampedCurrent ? styles.paginationPageActive : ''
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+
+            {endPage < totalPages ? (
+              <>
+                {endPage < totalPages - 1 ? (
+                  <span className={styles.paginationEllipsis}>...</span>
+                ) : null}
+                <button
+                  className={styles.paginationPageButton}
+                  onClick={() => handlePageChange(totalPages)}
+                >
+                  {totalPages}
+                </button>
+              </>
+            ) : null}
+
+            <button
+              disabled={clampedCurrent === totalPages}
+              onClick={() => handlePageChange(Math.min(totalPages, clampedCurrent + 1))}
+              className={styles.paginationButton}
+            >
+              Siguiente
+            </button>
+          </div>
+        )}
 
         {editingSku ? (
           <div className={styles.modalOverlay} onClick={cancelEdit}>

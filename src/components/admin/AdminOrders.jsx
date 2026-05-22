@@ -113,6 +113,14 @@ export default function AdminOrders({ baseUrl, token }) {
     });
   }, [orders, searchTerm, statusFilter]);
 
+  const getStatusClass = (status) => {
+    switch (status) {
+      case 'Pagado': return styles.statusPagado;
+      case 'Entregado': return styles.statusEntregado;
+      default: return styles.statusPendiente;
+    }
+  };
+
   return (
     <section className={styles.section}>
       <div className={styles.card}>
@@ -170,7 +178,9 @@ export default function AdminOrders({ baseUrl, token }) {
                     {friendlyDate(order.createdAt)}
                   </p>
                 </div>
-                <span className={styles.orderStatus}>{order.status || 'Pendiente'}</span>
+                <span className={`${styles.orderStatus} ${getStatusClass(order.status)}`}>
+                  {order.status || 'Pendiente'}
+                </span>
               </div>
               <div className={styles.orderTotal} style={{ marginTop: '1rem', fontSize: '1.1rem' }}>
                 ${Number(order.total || 0).toLocaleString('es-AR')}

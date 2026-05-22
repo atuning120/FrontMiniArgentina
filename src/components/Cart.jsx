@@ -153,7 +153,7 @@ export default function Cart({
                     <span>Enviar pedido</span>
                     <strong>WhatsApp</strong>
                   </button>
-                  <p>El pedido se enviara al WhatsApp configurado.</p>
+                  <p>El pedido se enviara al WhatsApp.</p>
                 </div>
               </div>
             )}

@@ -44,6 +44,9 @@ export default function AdminApp() {
           <h1>{viewLabel}</h1>
         </div>
         <div className={styles.headerActions}>
+          <button type="button" className={styles.logout} onClick={handleLogout}>
+            Salir
+          </button>
           <nav className={styles.nav}>
             {VIEWS.map((item) => (
               <button
@@ -58,9 +61,6 @@ export default function AdminApp() {
               </button>
             ))}
           </nav>
-          <button type="button" className={styles.logout} onClick={handleLogout}>
-            Salir
-          </button>
         </div>
       </header>
 

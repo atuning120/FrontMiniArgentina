@@ -18,7 +18,15 @@ export default function App() {
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [productsError, setProductsError] = useState(null);
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    try {
+      const savedCart = localStorage.getItem('cart');
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+      console.error('Error parsing cart from localStorage:', error);
+      return [];
+    }
+  });
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -82,6 +90,10 @@ export default function App() {
       isMounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
 
   const categories = useMemo(() => {
     const cats = new Set(products.map((p) => p.category));

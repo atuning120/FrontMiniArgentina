@@ -38,7 +38,7 @@ export default function Footer() {
                   </div>
                   <div>
                     <span>Email Corporativo</span>
-                    <strong>info@electricpro.com</strong>
+                    <strong>ventas@ledclean.ar</strong>
                   </div>
                 </li>
               </ul>
