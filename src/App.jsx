@@ -34,7 +34,7 @@ export default function App() {
 
   useEffect(() => {
     let isMounted = true;
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
     async function loadProducts() {
       try {

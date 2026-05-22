@@ -5,7 +5,7 @@ import AdminOrderForm from './AdminOrderForm.jsx';
 import AdminOrders from './AdminOrders.jsx';
 import styles from './AdminApp.module.css';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 const VIEWS = [
   { key: 'products', label: 'Productos' },
