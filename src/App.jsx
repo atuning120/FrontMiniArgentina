@@ -10,6 +10,7 @@ import ProductCatalog from './components/ProductCatalog.jsx';
 import InfoSection from './components/InfoSection.jsx';
 import ProductModal from './components/ProductModal.jsx';
 import WhatsAppButton from './components/WhatsAppButton.jsx';
+import Toast from './components/Toast.jsx';
 import styles from './App.module.css';
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todos');
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -144,6 +146,7 @@ export default function App() {
       }
       return [...prev, { ...product, quantity: 1 }];
     });
+    setToast({ id: Date.now(), productName: product.name });
   };
 
   const removeFromCart = (productId) => {
@@ -231,6 +234,8 @@ export default function App() {
       ) : null}
 
       <WhatsAppButton isCartOpen={isCartOpen} />
+      
+      <Toast toast={toast} onClose={() => setToast(null)} />
     </div>
   );
 }
