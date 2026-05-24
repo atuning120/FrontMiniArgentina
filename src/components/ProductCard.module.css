@@ -154,7 +154,8 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
-		margin-top: 0.75rem;
+		margin-top: auto;
+		padding-top: 0.75rem;
 	}
 
 	.priceStack {
@@ -177,7 +178,6 @@
 	}
 
 	.cta {
-		margin-top: auto;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
