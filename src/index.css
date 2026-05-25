@@ -8,11 +8,11 @@ html,
 body,
 #root {
   width: 100%;
-  min-width: 100vw;
 }
 
 body {
   margin: 0;
+  overflow-x: hidden;
 }
 
 #root {
