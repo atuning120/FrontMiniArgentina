@@ -31,6 +31,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Inyectar variables de entorno (Producción)
+        run: |
+          # Creamos el archivo .env al vuelo para que Vite lo lea durante la compilación
+          echo "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}" > .env
+
       - name: Construir y Subir imagen
         uses: docker/build-push-action@v5
         with:
