@@ -100,6 +100,17 @@ export default function AdminProducts({ baseUrl, token }) {
     loadProducts();
   }, []);
 
+  useEffect(() => {
+    if (isCreateOpen || editingSku || deleteTarget) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isCreateOpen, editingSku, deleteTarget]);
+
   const toPayload = (form) => {
     const price = Number(form.precio);
     const porcentaje = Number(form.porcentaje_oferta);

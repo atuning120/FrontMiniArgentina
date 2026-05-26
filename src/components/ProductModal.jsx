@@ -4,13 +4,19 @@ import styles from './ProductModal.module.css';
 
 export default function ProductModal({ product, onClose, onAddToCart }) {
   useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
     const handleKey = (event) => {
       if (event.key === 'Escape') {
         onClose();
       }
     };
     window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = '';
+    };
   }, [onClose]);
 
   const percentage = Number(product.raw?.porcentaje_oferta || 0);
