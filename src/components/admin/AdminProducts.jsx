@@ -17,6 +17,7 @@ const emptyForm = {
   destacado: false,
   id_catalogo: '',
   tamano_imagen: 'default',
+  upload_mode: 'upload',
 };
 
 const buildSkuFromName = (name) => {
@@ -63,6 +64,7 @@ export default function AdminProducts({ baseUrl, token }) {
   const [notice, setNotice] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('todos');
+  const [dragActive, setDragActive] = useState(false);
 
   const headers = useMemo(
     () => ({
@@ -196,6 +198,7 @@ export default function AdminProducts({ baseUrl, token }) {
       destacado: Boolean(product.destacado),
       id_catalogo: product.id_catalogo ?? '',
       tamano_imagen: product.tamano_imagen || 'default',
+      upload_mode: 'upload',
     });
   };
 
@@ -259,6 +262,66 @@ export default function AdminProducts({ baseUrl, token }) {
       await loadProducts();
     } catch (err) {
       setNotice(err.message || 'Error al eliminar');
+    }
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e, isEditForm) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const pseudoEvent = { target: { files: e.dataTransfer.files } };
+      handleImageUpload(pseudoEvent, isEditForm);
+    }
+  };
+
+  const handleImageUpload = async (event, isEditForm) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      setNotice('Subiendo imagen...');
+      const response = await fetch(`${baseUrl}/api/admin/upload`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al subir imagen');
+      }
+      const newImageUrl = data.imageUrl.startsWith('/') ? `${baseUrl}${data.imageUrl}` : data.imageUrl;
+      
+      if (isEditForm) {
+        setEditForm((prev) => ({ ...prev, imagen: newImageUrl }));
+      } else {
+        setCreateForm((prev) => ({ ...prev, imagen: newImageUrl }));
+      }
+      setNotice('Imagen subida correctamente.');
+    } catch (err) {
+      setNotice(err.message || 'Error al subir imagen');
     }
   };
 
@@ -706,16 +769,68 @@ export default function AdminProducts({ baseUrl, token }) {
                     </label>
                   </div>
 
-                  <label className={styles.label} style={{ gridColumn: '1 / -1' }}>
-                    Imagen URL
-                    <input
-                      value={editForm.imagen}
-                      onChange={(event) =>
-                        setEditForm((prev) => ({ ...prev, imagen: formatImageUrl(event.target.value) }))
-                      }
-                      className={styles.input}
-                    />
-                  </label>
+                  <div className={styles.label} style={{ gridColumn: '1 / -1' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>Imagen</span>
+                      <div className={styles.switchContainer}>
+                        <button
+                          type="button"
+                          className={`${styles.switchBtn} ${editForm.upload_mode === 'url' ? styles.active : ''}`}
+                          onClick={() => setEditForm(prev => ({ ...prev, upload_mode: 'url' }))}
+                        >
+                          URL
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.switchBtn} ${editForm.upload_mode === 'upload' ? styles.active : ''}`}
+                          onClick={() => setEditForm(prev => ({ ...prev, upload_mode: 'upload' }))}
+                        >
+                          Archivo
+                        </button>
+                      </div>
+                    </div>
+
+                    {editForm.upload_mode === 'url' ? (
+                      <input
+                        value={editForm.imagen}
+                        onChange={(event) =>
+                          setEditForm((prev) => ({ ...prev, imagen: formatImageUrl(event.target.value) }))
+                        }
+                        className={styles.input}
+                        placeholder="https://ejemplo.com/imagen.jpg"
+                      />
+                    ) : (
+                      <div
+                        className={`${styles.dropzone} ${dragActive ? styles.dragActive : ''}`}
+                        onDragEnter={handleDragEnter}
+                        onDragLeave={handleDragLeave}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, true)}
+                      >
+                        {editForm.imagen && editForm.upload_mode === 'upload' ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+                            <img src={editForm.imagen} alt="Preview" style={{ height: '80px', borderRadius: '0.5rem', objectFit: 'contain' }} />
+                            <p style={{ margin: 0, fontWeight: 500 }}>Imagen lista</p>
+                            <label className={styles.secondary} style={{ cursor: 'pointer', margin: 0, display: 'inline-block' }}>
+                              Cambiar archivo
+                              <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, true)} style={{ display: 'none' }} />
+                            </label>
+                          </div>
+                        ) : (
+                          <>
+                            <p>Arrastra tu imagen aquí o haz clic para subir</p>
+                            <p className={styles.notice} style={{ marginTop: '-0.2rem', marginBottom: '0.5rem', fontSize: '0.75rem' }}>
+                              Formatos: JPG, PNG, WEBP, AVIF
+                            </p>
+                            <label className={styles.secondary} style={{ cursor: 'pointer', margin: '0.5rem 0 0 0', display: 'inline-block' }}>
+                              Seleccionar archivo
+                              <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, true)} style={{ display: 'none' }} />
+                            </label>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
                   
                   <label className={styles.label} style={{ gridColumn: '1 / -1' }}>
                     Descripcion
@@ -956,16 +1071,68 @@ export default function AdminProducts({ baseUrl, token }) {
                     </label>
                   </div>
 
-                  <label className={styles.label} style={{ gridColumn: '1 / -1' }}>
-                    Imagen URL
-                    <input
-                      value={createForm.imagen}
-                      onChange={(event) =>
-                        setCreateForm((prev) => ({ ...prev, imagen: formatImageUrl(event.target.value) }))
-                      }
-                      className={styles.input}
-                    />
-                  </label>
+                  <div className={styles.label} style={{ gridColumn: '1 / -1' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>Imagen</span>
+                      <div className={styles.switchContainer}>
+                        <button
+                          type="button"
+                          className={`${styles.switchBtn} ${createForm.upload_mode === 'url' ? styles.active : ''}`}
+                          onClick={() => setCreateForm(prev => ({ ...prev, upload_mode: 'url' }))}
+                        >
+                          URL
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.switchBtn} ${createForm.upload_mode === 'upload' ? styles.active : ''}`}
+                          onClick={() => setCreateForm(prev => ({ ...prev, upload_mode: 'upload' }))}
+                        >
+                          Archivo
+                        </button>
+                      </div>
+                    </div>
+
+                    {createForm.upload_mode === 'url' ? (
+                      <input
+                        value={createForm.imagen}
+                        onChange={(event) =>
+                          setCreateForm((prev) => ({ ...prev, imagen: formatImageUrl(event.target.value) }))
+                        }
+                        className={styles.input}
+                        placeholder="https://ejemplo.com/imagen.jpg"
+                      />
+                    ) : (
+                      <div
+                        className={`${styles.dropzone} ${dragActive ? styles.dragActive : ''}`}
+                        onDragEnter={handleDragEnter}
+                        onDragLeave={handleDragLeave}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, false)}
+                      >
+                        {createForm.imagen && createForm.upload_mode === 'upload' ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+                            <img src={createForm.imagen} alt="Preview" style={{ height: '80px', borderRadius: '0.5rem', objectFit: 'contain' }} />
+                            <p style={{ margin: 0, fontWeight: 500 }}>Imagen lista</p>
+                            <label className={styles.secondary} style={{ cursor: 'pointer', margin: 0, display: 'inline-block' }}>
+                              Cambiar archivo
+                              <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, false)} style={{ display: 'none' }} />
+                            </label>
+                          </div>
+                        ) : (
+                          <>
+                            <p>Arrastra tu imagen aquí o haz clic para subir</p>
+                            <p className={styles.notice} style={{ marginTop: '-0.2rem', marginBottom: '0.5rem', fontSize: '0.75rem' }}>
+                              Formatos: JPG, PNG, WEBP, AVIF
+                            </p>
+                            <label className={styles.secondary} style={{ cursor: 'pointer', margin: '0.5rem 0 0 0', display: 'inline-block' }}>
+                              Seleccionar archivo
+                              <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, false)} style={{ display: 'none' }} />
+                            </label>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
                   <label className={styles.label} style={{ gridColumn: '1 / -1' }}>
                     Descripcion
