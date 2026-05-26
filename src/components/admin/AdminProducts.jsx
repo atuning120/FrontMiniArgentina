@@ -41,6 +41,16 @@ const getNextCatalogId = (items) => {
   return Math.max(...ids) + 1;
 };
 
+const formatImageUrl = (url) => {
+  if (!url) return '';
+  const trimmed = url.trim();
+  const match = trimmed.match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:.*&)?id=))([a-zA-Z0-9_-]+)/);
+  if (match && match[1]) {
+    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+  }
+  return trimmed;
+};
+
 export default function AdminProducts({ baseUrl, token }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -701,7 +711,7 @@ export default function AdminProducts({ baseUrl, token }) {
                     <input
                       value={editForm.imagen}
                       onChange={(event) =>
-                        setEditForm((prev) => ({ ...prev, imagen: event.target.value }))
+                        setEditForm((prev) => ({ ...prev, imagen: formatImageUrl(event.target.value) }))
                       }
                       className={styles.input}
                     />
@@ -951,7 +961,7 @@ export default function AdminProducts({ baseUrl, token }) {
                     <input
                       value={createForm.imagen}
                       onChange={(event) =>
-                        setCreateForm((prev) => ({ ...prev, imagen: event.target.value }))
+                        setCreateForm((prev) => ({ ...prev, imagen: formatImageUrl(event.target.value) }))
                       }
                       className={styles.input}
                     />
