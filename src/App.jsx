@@ -110,13 +110,13 @@ export default function App() {
       const name = p.name.toLowerCase();
       const desc = p.description.toLowerCase();
 
-      const matchesSearch = searchTerms.length === 0 || searchTerms.every(term => 
+      const matchesSearch = searchTerms.length === 0 || searchTerms.every(term =>
         name.includes(term) || desc.includes(term)
       );
 
       const matchesCategory =
         activeCategory === 'Todos' || p.category === activeCategory;
-        
+
       return matchesSearch && matchesCategory;
     });
   }, [products, searchQuery, activeCategory]);
@@ -198,7 +198,7 @@ export default function App() {
         onAddToCart={addToCart}
       />
 
-      <ProductCatalog 
+      <ProductCatalog
         filteredProducts={filteredProducts}
         loadingProducts={loadingProducts}
         productsError={productsError}
@@ -234,8 +234,9 @@ export default function App() {
       ) : null}
 
       <WhatsAppButton isCartOpen={isCartOpen} />
-      
+
       <Toast toast={toast} onClose={() => setToast(null)} />
     </div>
   );
 }
+
