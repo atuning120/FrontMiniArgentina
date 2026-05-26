@@ -17,7 +17,7 @@ const emptyForm = {
   destacado: false,
   id_catalogo: '',
   tamano_imagen: 'default',
-  upload_mode: 'url',
+  upload_mode: 'upload',
 };
 
 const buildSkuFromName = (name) => {
@@ -198,6 +198,7 @@ export default function AdminProducts({ baseUrl, token }) {
       destacado: Boolean(product.destacado),
       id_catalogo: product.id_catalogo ?? '',
       tamano_imagen: product.tamano_imagen || 'default',
+      upload_mode: 'upload',
     });
   };
 
