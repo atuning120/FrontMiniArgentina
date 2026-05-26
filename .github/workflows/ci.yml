@@ -33,9 +33,9 @@ jobs:
 
       - name: Inyectar variables de entorno (Producción)
         run: |
-          # Creamos el archivo .env al vuelo para que Vite lo lea durante la compilación
-          echo "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}" > .env
-          echo "VITE_WHATSAPP_PHONE=${{ secrets.VITE_WHATSAPP_PHONE }}" >> .env
+          # Creamos el archivo .env.production al vuelo para que Vite lo lea (y evitamos el .dockerignore)
+          echo "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}" > .env.production
+          echo "VITE_WHATSAPP_PHONE=${{ secrets.VITE_WHATSAPP_PHONE }}" >> .env.production
 
       - name: Construir y Subir imagen
         uses: docker/build-push-action@v5
