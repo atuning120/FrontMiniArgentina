@@ -29,7 +29,7 @@
   position: relative;
   background: var(--obsidian);
   overflow: hidden;
-  min-height: 550px;
+  min-height: 720px;
   display: flex;
   align-items: center;
   justify-content: center;

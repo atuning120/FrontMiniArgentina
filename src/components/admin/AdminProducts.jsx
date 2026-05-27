@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Filters from '../Filters.jsx';
 import styles from './AdminProducts.module.css';
 
@@ -397,7 +398,7 @@ export default function AdminProducts({ baseUrl, token }) {
   }, [searchQuery, activeCategory]);
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / itemsPerPage));
-  const maxButtons = 5;
+  const maxButtons = 3;
   const clampedCurrent = Math.max(1, Math.min(currentPage, totalPages));
   const startPage = Math.max(1, clampedCurrent - Math.floor(maxButtons / 2));
   const endPage = Math.min(totalPages, startPage + maxButtons - 1);
@@ -526,7 +527,8 @@ export default function AdminProducts({ baseUrl, token }) {
               onClick={() => handlePageChange(Math.max(1, clampedCurrent - 1))}
               className={styles.paginationButton}
             >
-              Anterior
+              <ChevronLeft size={16} />
+              <span className={styles.hideMobile}>Anterior</span>
             </button>
 
             {pageStart > 1 ? (
@@ -574,7 +576,8 @@ export default function AdminProducts({ baseUrl, token }) {
               onClick={() => handlePageChange(Math.min(totalPages, clampedCurrent + 1))}
               className={styles.paginationButton}
             >
-              Siguiente
+              <span className={styles.hideMobile}>Siguiente</span>
+              <ChevronRight size={16} />
             </button>
           </div>
         )}
