@@ -178,6 +178,7 @@ export default function App() {
       <Hero />
 
       <ProductCarousel
+        id="offers-section"
         title="Ofertas imperdibles"
         subtitle="Precios exclusivos web"
         icon="🔥"

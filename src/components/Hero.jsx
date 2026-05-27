@@ -19,7 +19,7 @@ const HERO_SLIDES = [
     badgeClass: styles.badgeCyan,
     titlePrimary: "TECNOLOGÍA LED",
     titleSecondary: "Y SUMINISTROS",
-    titleHighlight: "CLEAN",
+    titleHighlight: "SUMINISTROS",
     description: "Soluciones de iluminación eficientes y sustentables, materiales de alto rendimiento y la mejor asesoría técnica para tus proyectos.",
     image: "https://images.unsplash.com/photo-1565814636199-ae8133055c1c?q=80&w=1600&auto=format&fit=crop",
     ctaText: "VER PRODUCTOS",
@@ -28,29 +28,29 @@ const HERO_SLIDES = [
   },
   {
     id: 2,
-    badge: "Punto de Retiro",
+    badge: "Catálogo Digital",
     badgeClass: styles.badgeEmerald,
     titlePrimary: "CONOCÉ NUESTRA",
     titleSecondary: "TIENDA",
-    titleHighlight: "FÍSICA",
-    description: "El lugar ideal para retirar tus compras online de forma rápida y segura. Aprovechá tu visita para ver los productos en nuestra tienda y recibir la mejor atención.",
+    titleHighlight: "ONLINE",
+    description: "Explorá todo nuestro catálogo de productos desde la comodidad de tu casa. Realizá tus compras de forma rápida, segura y con la mejor atención.",
     detailInfo: {
-      address: "Pque. Industrial Oeste, Buenos Aires, AR",
-      hours: "Lunes a Viernes 08:30 a 18:00hs • Sábados 09:00 a 13:00hs",
+      address: "Envíos y retiros disponibles",
+      hours: "Atención web 24/7",
     },
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1600&auto=format&fit=crop",
-    ctaText: "CÓMO LLEGAR",
-    ctaAction: "location",
+    ctaText: "VER CATÁLOGO",
+    ctaAction: "catalog",
     whatsappBadge: false,
   },
   {
     id: 3,
-    badge: "Retiro Inmediato en Sucursal",
+    badge: "Envíos a toda Argentina",
     badgeClass: styles.badgeAmber,
-    titlePrimary: "COMPRÁ ONLINE Y",
-    titleSecondary: "RETIRÁ EN",
-    titleHighlight: "EL LOCAL",
-    description: "Preparamos tus pedidos al instante. Comprá a través de la web y pasá a retirar tu mercadería por nuestra sucursal de forma ágil y segura.",
+    titlePrimary: "HACEMOS ENVÍOS A",
+    titleSecondary: "TODO EL",
+    titleHighlight: "PAÍS",
+    description: "Despachamos tus pedidos de forma rápida y segura a cualquier punto de la Argentina. Comprá a través de la web y recibilo en la puerta de tu casa o sucursal de correo más cercana.",
     image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1600&auto=format&fit=crop",
     ctaText: "VER OFERTAS",
     ctaAction: "offers",
@@ -89,20 +89,34 @@ export default function Hero() {
   }, [isHoveringCarousel]);
 
   const handleCtaAction = (action) => {
-    if (action === 'catalog') {
-      const el = document.getElementById('catalog');
-      el?.scrollIntoView({ behavior: 'smooth' });
-    } else if (action === 'location') {
-      const el = document.getElementById('footer-location');
-      el?.scrollIntoView({ behavior: 'smooth' });
-    } else if (action === 'offers') {
-      const el = document.getElementById('offers-section');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        const catalogEl = document.getElementById('catalog');
-        catalogEl?.scrollIntoView({ behavior: 'smooth' });
-      }
+    let el;
+    if (action === 'catalog') el = document.getElementById('catalog');
+    else if (action === 'location') el = document.getElementById('footer-location');
+    else if (action === 'offers') el = document.getElementById('offers-section') || document.getElementById('catalog');
+    
+    if (el) {
+      const offset = 80;
+      const targetY = el.getBoundingClientRect().top + window.scrollY - offset;
+      const startY = window.scrollY;
+      const distance = targetY - startY;
+      const duration = 600; // 0.6 segundos de duración
+      let startTime = null;
+
+      const easeInOutCubic = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+      const step = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const progress = timestamp - startTime;
+        const percent = Math.min(progress / duration, 1);
+        
+        window.scrollTo(0, startY + distance * easeInOutCubic(percent));
+        
+        if (progress < duration) {
+          window.requestAnimationFrame(step);
+        }
+      };
+
+      window.requestAnimationFrame(step);
     }
   };
 
