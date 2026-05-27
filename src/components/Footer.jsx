@@ -15,6 +15,7 @@ export default function Footer() {
               Empresa especializada en la importación y distribución técnica de componentes
               eléctricos. Soluciones integrales para proyectos de gran escala.
             </p>
+            {/* 
             <div className={styles.social}>
               <a href="#" title="Instagram">
                 <FaInstagram className={styles.icon} />
@@ -26,6 +27,7 @@ export default function Footer() {
                 <FaFacebookF className={styles.icon} />
               </a>
             </div>
+            */}
           </div>
 
           <div className={styles.contact}>

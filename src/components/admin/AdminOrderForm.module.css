@@ -242,6 +242,7 @@ select {
 .orderInlineActions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 1.5rem;
   margin-top: 1rem;
 }
@@ -291,19 +292,19 @@ select {
   margin: 0;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 840px) {
   .orderRowHeader {
     display: none;
   }
 
   .orderRow {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     text-align: left;
   }
-}
-
-@media (max-width: 840px) {
-  .orderRow {
-    grid-template-columns: minmax(200px, 1fr) 1fr;
+  
+  .orderRow > *:nth-child(1),
+  .orderRow > *:nth-child(4),
+  .orderRow > *:nth-child(5) {
+    grid-column: 1 / -1;
   }
 }
