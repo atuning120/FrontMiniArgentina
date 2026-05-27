@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import styles from './WhatsAppModal.module.css';
@@ -13,6 +14,18 @@ export default function WhatsAppModal({ isOpen, onClose }) {
     window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
     onClose();
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   return (
     <AnimatePresence>

@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import Filters from './Filters.jsx';
 import ProductCard from './ProductCard.jsx';
 import styles from './ProductCatalog.module.css';
@@ -31,7 +31,7 @@ export default function ProductCatalog({
     1,
     Math.ceil(filteredProducts.length / itemsPerPage)
   );
-  const maxButtons = 5;
+  const maxButtons = 3;
   const clampedCurrent = Math.min(currentPage, totalPages);
   const startPage = Math.max(1, clampedCurrent - Math.floor(maxButtons / 2));
   const endPage = Math.min(totalPages, startPage + maxButtons - 1);
@@ -125,7 +125,8 @@ export default function ProductCatalog({
             onClick={() => handlePageChange(Math.max(1, clampedCurrent - 1))}
             className={styles.paginationButton}
           >
-            Anterior
+            <ChevronLeft size={16} />
+            <span className={styles.hideMobile}>Anterior</span>
           </button>
 
           {pageStart > 1 ? (
@@ -173,7 +174,8 @@ export default function ProductCatalog({
             onClick={() => handlePageChange(Math.min(totalPages, clampedCurrent + 1))}
             className={styles.paginationButton}
           >
-            Siguiente
+            <span className={styles.hideMobile}>Siguiente</span>
+            <ChevronRight size={16} />
           </button>
         </div>
       )}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Minus, Plus, ShoppingCart, Trash2, X } from 'lucide-react';
 import styles from './Cart.module.css';
@@ -24,6 +24,19 @@ export default function Cart({
       })),
     [cart]
   );
+
+  useEffect(() => {
+    if (isCartOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    // Cleanup when component unmounts
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isCartOpen]);
 
   const formatPrice = (value) => Number(value || 0).toLocaleString('es-AR');
 

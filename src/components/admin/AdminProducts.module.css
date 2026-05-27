@@ -551,7 +551,10 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: nowrap;
   gap: 0.5rem;
+
+
 
   .paginationButton {
     padding: 0.75rem 1.25rem;
@@ -568,6 +571,12 @@ select {
     gap: 0.35rem;
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      padding: 0.6rem 0.8rem;
+      font-size: 0.75rem;
+    }
 
     &:disabled {
       opacity: 0.3;
@@ -586,6 +595,13 @@ select {
     font-weight: 800;
     cursor: pointer;
     transition: all 0.2s ease;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      width: 2.2rem;
+      height: 2.2rem;
+      font-size: 0.85rem;
+    }
 
     &.paginationPageActive {
       background: var(--accent-500);
@@ -599,6 +615,12 @@ select {
     color: rgba(255, 255, 255, 0.5);
     font-size: 1rem;
     padding: 0.35rem 0.4rem;
+  }
+
+  .hideMobile {
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 }
 
