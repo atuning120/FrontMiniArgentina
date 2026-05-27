@@ -177,6 +177,8 @@ export default function App() {
 
       <Hero />
 
+      <InfoSection />
+
       <ProductCarousel
         id="offers-section"
         title="Ofertas imperdibles"
@@ -211,8 +213,6 @@ export default function App() {
         onProductClick={setSelectedProduct}
         onAddToCart={addToCart}
       />
-
-      <InfoSection />
 
       <Footer />
 

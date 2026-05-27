@@ -18,7 +18,7 @@ const HERO_SLIDES = [
     badge: "Eficiencia que Ilumina tu Vida",
     badgeClass: styles.badgeCyan,
     titlePrimary: "TECNOLOGÍA LED",
-    titleSecondary: "Y SUMINISTROS",
+    titleSecondary: "Y",
     titleHighlight: "SUMINISTROS",
     description: "Soluciones de iluminación eficientes y sustentables, materiales de alto rendimiento y la mejor asesoría técnica para tus proyectos.",
     image: "https://images.unsplash.com/photo-1565814636199-ae8133055c1c?q=80&w=1600&auto=format&fit=crop",
@@ -93,7 +93,7 @@ export default function Hero() {
     if (action === 'catalog') el = document.getElementById('catalog');
     else if (action === 'location') el = document.getElementById('footer-location');
     else if (action === 'offers') el = document.getElementById('offers-section') || document.getElementById('catalog');
-    
+
     if (el) {
       const offset = 80;
       const targetY = el.getBoundingClientRect().top + window.scrollY - offset;
@@ -108,9 +108,9 @@ export default function Hero() {
         if (!startTime) startTime = timestamp;
         const progress = timestamp - startTime;
         const percent = Math.min(progress / duration, 1);
-        
+
         window.scrollTo(0, startY + distance * easeInOutCubic(percent));
-        
+
         if (progress < duration) {
           window.requestAnimationFrame(step);
         }
