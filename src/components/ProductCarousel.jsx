@@ -7,6 +7,7 @@ import styles from './ProductCarousel.module.css';
 const MProductCard = motion(ProductCard);
 
 export default function ProductCarousel({
+  id,
   title,
   subtitle,
   icon,
@@ -41,7 +42,7 @@ export default function ProductCarousel({
   };
 
   return (
-    <section className={styles.carouselSection}>
+    <section id={id} className={styles.carouselSection}>
       <div>
         <div
           className={styles.carouselHeader}
