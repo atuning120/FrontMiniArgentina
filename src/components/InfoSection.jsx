@@ -1,4 +1,4 @@
-import { ClipboardList, ShoppingCart, MessageCircle, CreditCard, Store } from 'lucide-react';
+import { ClipboardList, ShoppingCart, MessageCircle, CreditCard, PackageCheck } from 'lucide-react';
 import styles from './InfoSection.module.css';
 
 export default function InfoSection() {
@@ -7,7 +7,7 @@ export default function InfoSection() {
     { icon: ShoppingCart, title: '2. ARMA TU CARRITO', sub: 'AGREGA LOS PRODUCTOS QUE NECESITAS' },
     { icon: MessageCircle, title: '3. WHATSAPP', sub: 'CONFIRMA DETALLES' },
     { icon: CreditCard, title: '4. PAGA', sub: 'MERCADO PAGO O TRANSFERENCIA' },
-    { icon: Store, title: '5. RETIRA', sub: 'LISTO PARA LLEVAR' },
+    { icon: PackageCheck, title: '5. RETIRA O RECIBE', sub: 'EN SUCURSAL O ENVÍO A TODO EL PAÍS' },
   ];
 
   return (
