@@ -21,7 +21,7 @@ const HERO_SLIDES = [
     titleSecondary: "Y",
     titleHighlight: "SUMINISTROS",
     description: "Soluciones de iluminación eficientes y sustentables, materiales de alto rendimiento y la mejor asesoría técnica para tus proyectos.",
-    image: "https://images.unsplash.com/photo-1565814636199-ae8133055c1c?q=80&w=1600&auto=format&fit=crop",
+    image: "https://res.cloudinary.com/dse8u2afw/image/upload/v1779914689/image_ec1c48a8_h5uty2.png",
     ctaText: "VER PRODUCTOS",
     ctaAction: "catalog",
     whatsappBadge: true,
