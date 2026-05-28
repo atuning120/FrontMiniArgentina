@@ -51,11 +51,11 @@ export default function Footer() {
                   </div>
                   <div>
                     <span>WhatsApp Soporte</span>
-                    <strong>+54 9 11 1234-5678</strong>
+                    <strong>+54 9 2646252805</strong>
                   </div>
                 </li>
               </ul>
-              <ul>
+              {/*<ul>
                 <li className={styles.contactCard}>
                   <div className={styles.iconContainer}>
                     <MapPin className={styles.icon} />
@@ -66,6 +66,7 @@ export default function Footer() {
                   </div>
                 </li>
               </ul>
+              */}
             </div>
           </div>
         </div>
