@@ -1,16 +1,52 @@
-# React + Vite
+# Mini E-Commerce - Frontend (FrontMiniArgentina)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositorio contiene la interfaz de usuario (Frontend) para la plataforma Mini E-Commerce. Está construida como una Single Page Application (SPA) utilizando **React** y herramientas modernas para asegurar una experiencia de usuario rápida, dinámica y adaptativa.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Funcionalidad General
 
-## React Compiler
+El frontend está dividido en dos grandes áreas funcionales:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. **La Tienda Pública (Storefront):** Es la interfaz que ven los clientes. Les permite navegar por el catálogo de productos (por categorías), ver detalles de los mismos, y agregar artículos a un carrito de compras. El proceso de compra finaliza redirigiendo al usuario a WhatsApp con un mensaje pre-armado detallando su pedido.
+2. **El Panel Administrativo (Admin Dashboard):** Una sección privada protegida con contraseña donde el dueño de la tienda puede gestionar el catálogo.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Funcionalidades Específicas
+
+1. **Catálogo de Productos y Carrito:**
+   - **Visualización Dinámica:** Carruseles animados para destacar productos, y cuadrículas adaptativas para explorar categorías (ej. Hogar y Electrónica).
+   - **Gestión de Carrito:** Un carrito flotante e interactivo que persiste el estado durante la navegación, calculando el total a pagar en tiempo real.
+   - **Checkout por WhatsApp:** Al confirmar la compra, se genera un enlace a WhatsApp que incluye los detalles del pedido, facilitando la conversión sin necesidad de pasarelas de pago complejas.
+
+2. **Panel de Administrador (`/admin`):**
+   - **Login Seguro:** Pantalla de autenticación para validar las credenciales del usuario administrador.
+   - **CRUD de Productos:** Interfaz visual para añadir nuevos productos, subir imágenes con vista previa en tiempo real, editar precios/stock, y eliminar productos descontinuados.
+   - **Gestión de Cuenta:** Sección dedicada donde el administrador puede cambiar sus credenciales de acceso (usuario y contraseña) usando un PIN de seguridad.
+
+3. **Experiencia de Usuario (UX) e Interfaz (UI):**
+   - **Diseño Responsivo:** Completamente adaptable a dispositivos móviles, tablets y monitores de escritorio.
+   - **Animaciones Fluidas:** Incorporación de animaciones suaves (transiciones de páginas, carrusel, notificaciones *toast* al agregar productos) para un diseño de primera calidad.
+   - **Notificaciones Toast:** Alertas visuales dinámicas que informan al usuario sobre acciones exitosas (como agregar un ítem al carrito).
+
+---
+
+## 💻 Tecnologías y Herramientas Usadas
+
+- **React (v19):** Librería principal para la construcción de interfaces de usuario basadas en componentes.
+- **Vite:** Empaquetador web ultrarrápido (bundler) utilizado para un entorno de desarrollo ágil y una construcción (build) altamente optimizada para producción.
+- **React Router DOM (v7):** Herramienta para el manejo de rutas del lado del cliente, permitiendo la navegación fluida entre páginas sin recargar el navegador.
+- **Framer Motion (`motion`):** Librería de animaciones de nivel profesional utilizada para las transiciones, el comportamiento del carrusel de productos y elementos interactivos.
+- **PostCSS (con `postcss-nesting`):** Procesador CSS que permite escribir hojas de estilo modernas utilizando "CSS Nesting" (anidación nativa de reglas) manteniendo el código limpio y modular, sin necesidad de compiladores pesados como SASS.
+- **Lucide React & React Icons:** Conjuntos de iconos vectoriales ligeros y escalables para ilustrar la interfaz (iconos de carrito, usuario, menú, etc.).
+- **ESLint:** Herramienta de análisis de código estático para identificar patrones problemáticos y mantener un estándar de calidad en el código JavaScript/React.
+
+---
+
+## 🚀 Despliegue e Infraestructura
+
+Al igual que el backend, el frontend está optimizado para su fácil despliegue en producción:
+- Construido en una imagen estática mediante **Docker** y servido a través de **Nginx/Caddy**.
+- El enrutamiento de peticiones a la API del backend se maneja mediante Caddy como Reverse Proxy, evitando así problemas de CORS (usando el mismo dominio base `ledclean.ar`).
+- Se comunica directamente con el contenedor del backend para cargar las imágenes de los productos desde el directorio estático compartido.
