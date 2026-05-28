@@ -39,8 +39,10 @@ export default function AdminLogin({ baseUrl, onSuccess }) {
   return (
     <div className={styles.loginWrapper}>
       <form className={styles.loginCard} onSubmit={handleSubmit}>
-        <h1>Acceso administrador</h1>
-        <p>Ingresa con las credenciales configuradas en el backend.</p>
+        <div className={styles.header}>
+          <h1>Acceso administrador</h1>
+          <p>Ingresa tus credenciales para continuar.</p>
+        </div>
 
         <label className={styles.label}>
           Usuario
