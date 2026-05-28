@@ -20,6 +20,13 @@
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 30px 60px rgba(2, 6, 23, 0.6);
+    
+    /* Hardware acceleration fixes to prevent glitching on mobile/Android */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
 
     .close {
       position: absolute;

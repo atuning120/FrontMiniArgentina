@@ -1,6 +1,7 @@
 import { Mail, MapPin, MessageCircle } from 'lucide-react';
 import { FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa';
 import styles from './Footer.module.css';
+import ContactPopover from './ContactPopover';
 
 export default function Footer() {
   return (
@@ -36,19 +37,20 @@ export default function Footer() {
             <div className={styles.columns}>
               <ul>
                 <li>
-                  <a
-                    href={`mailto:${import.meta.env.VITE_EMAIL || 'ventas@ledclean.ar'}`}
-                    className={styles.contactCard}
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <div className={`${styles.iconContainer} ${styles.isAccent}`}>
-                      <Mail className={styles.icon} />
-                    </div>
-                    <div>
-                      <span>Email Corporativo</span>
-                      <strong style={{ textTransform: 'lowercase' }}>{import.meta.env.VITE_EMAIL || 'ventas@ledclean.ar'}</strong>
-                    </div>
-                  </a>
+                  <ContactPopover 
+                    targetEmail={import.meta.env.VITE_EMAIL || 'ventas@ledclean.ar'}
+                    buttonContent={
+                      <div className={styles.contactCard} style={{ textDecoration: 'none' }}>
+                        <div className={`${styles.iconContainer} ${styles.isAccent}`}>
+                          <Mail className={styles.icon} />
+                        </div>
+                        <div>
+                          <span>Email Corporativo</span>
+                          <strong style={{ textTransform: 'lowercase' }}>{import.meta.env.VITE_EMAIL || 'ventas@ledclean.ar'}</strong>
+                        </div>
+                      </div>
+                    }
+                  />
                 </li>
               </ul>
               <ul>
@@ -62,18 +64,24 @@ export default function Footer() {
                   </div>
                 </li>
               </ul>
-              {/*<ul>
-                <li className={styles.contactCard}>
-                  <div className={styles.iconContainer}>
-                    <MapPin className={styles.icon} />
-                  </div>
-                  <div>
-                    <span>Nuestra Sede</span>
-                    <strong>Pque. Industrial, Buenos Aires.</strong>
-                  </div>
+              <ul>
+                <li>
+                  <ContactPopover 
+                    targetEmail={import.meta.env.VITE_CONSULTAS_EMAIL || 'consultas@ledclean.ar'}
+                    buttonContent={
+                      <div className={styles.contactCard} style={{ textDecoration: 'none' }}>
+                        <div className={`${styles.iconContainer} ${styles.isAccent}`}>
+                          <Mail className={styles.icon} />
+                        </div>
+                        <div>
+                          <span>Consultas y Ayuda</span>
+                          <strong style={{ textTransform: 'lowercase' }}>{import.meta.env.VITE_CONSULTAS_EMAIL || 'consultas@ledclean.ar'}</strong>
+                        </div>
+                      </div>
+                    }
+                  />
                 </li>
               </ul>
-              */}
             </div>
           </div>
         </div>
