@@ -14,20 +14,21 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+  }
+
+  p {
+    margin: 0 0 1rem 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
 }
 
-.settingsCard h2 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-}
-
-.settingsCard p {
-  margin: 0 0 1rem 0;
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
 
 .label {
   display: flex;
@@ -49,18 +50,20 @@
   border-radius: 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.8rem 1rem;
-  padding-right: 2.5rem; /* Space for the icon */
+  padding-right: 2.5rem;
+  /* Space for the icon */
   font-size: 0.95rem;
   background: rgba(0, 0, 0, 0.2);
   color: var(--text);
   transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent-500);
+    background: rgba(0, 0, 0, 0.3);
+  }
 }
 
-.input:focus {
-  outline: none;
-  border-color: var(--accent-500);
-  background: rgba(0, 0, 0, 0.3);
-}
 
 .eyeButton {
   position: absolute;
@@ -74,11 +77,12 @@
   justify-content: center;
   padding: 0;
   transition: color 0.2s;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.9);
+  }
 }
 
-.eyeButton:hover {
-  color: rgba(255, 255, 255, 0.9);
-}
 
 .error {
   color: #ef4444;
@@ -109,13 +113,13 @@
   font-size: 1rem;
   transition: all 0.3s ease;
   margin-top: 1rem;
-}
 
-.primary:hover:not(:disabled) {
-  background: var(--accent-500);
-}
+  &:hover:not(:disabled) {
+    background: var(--accent-500);
+  }
 
-.primary:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
 }

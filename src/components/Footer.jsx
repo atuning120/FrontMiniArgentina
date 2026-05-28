@@ -15,33 +15,40 @@ export default function Footer() {
               Empresa especializada en la importación y distribución técnica de componentes
               eléctricos. Soluciones integrales para proyectos de gran escala.
             </p>
-            {/* 
+
             <div className={styles.social}>
-              <a href="#" title="Instagram">
+              {/*<a href="#" title="Instagram">
                 <FaInstagram className={styles.icon} />
-              </a>
-              <a href="#" title="YouTube">
+              </a>*/}
+              {/*<a href="#" title="YouTube">
                 <FaYoutube className={styles.icon} />
               </a>
-              <a href="#" title="Facebook">
+              */}
+              <a href="https://www.facebook.com/share/1Cqo7RRLFV/" title="Facebook">
                 <FaFacebookF className={styles.icon} />
               </a>
             </div>
-            */}
+
           </div>
 
           <div className={styles.contact}>
             <h5>Central de Contacto</h5>
             <div className={styles.columns}>
               <ul>
-                <li className={styles.contactCard}>
-                  <div className={`${styles.iconContainer} ${styles.isAccent}`}>
-                    <Mail className={styles.icon} />
-                  </div>
-                  <div>
-                    <span>Email Corporativo</span>
-                    <strong>ventas@ledclean.ar</strong>
-                  </div>
+                <li>
+                  <a
+                    href={`mailto:${import.meta.env.VITE_EMAIL || 'ventas@ledclean.ar'}`}
+                    className={styles.contactCard}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <div className={`${styles.iconContainer} ${styles.isAccent}`}>
+                      <Mail className={styles.icon} />
+                    </div>
+                    <div>
+                      <span>Email Corporativo</span>
+                      <strong style={{ textTransform: 'lowercase' }}>{import.meta.env.VITE_EMAIL || 'ventas@ledclean.ar'}</strong>
+                    </div>
+                  </a>
                 </li>
               </ul>
               <ul>
@@ -51,7 +58,7 @@ export default function Footer() {
                   </div>
                   <div>
                     <span>WhatsApp Soporte</span>
-                    <strong>+54 9 2646252805</strong>
+                    <strong>+{import.meta.env.VITE_WHATSAPP_PHONE}</strong>
                   </div>
                 </li>
               </ul>
