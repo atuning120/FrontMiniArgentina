@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import ProductCard from './ProductCard.jsx';
 import styles from './ProductCarousel.module.css';
 
-const MProductCard = motion(ProductCard);
+const MProductCard = motion.create(ProductCard);
 
 export default function ProductCarousel({
   id,
