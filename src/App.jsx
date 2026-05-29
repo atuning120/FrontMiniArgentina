@@ -97,6 +97,12 @@ export default function App() {
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
+  useEffect(() => {
+    if (isCartOpen) {
+      setToast(null);
+    }
+  }, [isCartOpen]);
+
   const categories = useMemo(() => {
     const cats = new Set(products.map((p) => p.category));
     cats.add('limpieza');
