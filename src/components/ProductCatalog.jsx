@@ -5,8 +5,6 @@ import Filters from './Filters.jsx';
 import ProductCard from './ProductCard.jsx';
 import styles from './ProductCatalog.module.css';
 
-const MProductCard = motion(ProductCard);
-
 export default function ProductCatalog({
   filteredProducts,
   loadingProducts,
@@ -87,7 +85,6 @@ export default function ProductCatalog({
 
       {!loadingProducts && !productsError && (
         <div className={styles.grid}>
-          <AnimatePresence mode="popLayout">
             {paginatedProducts.map((product) => {
               const hasOffer =
                 Number.isFinite(product.originalPrice) &&
@@ -101,20 +98,15 @@ export default function ProductCatalog({
                 : null;
 
               return (
-                <MProductCard
+                <ProductCard
                   key={product.id}
                   product={product}
                   type="default"
                   onProductClick={onProductClick}
                   onAddToCart={onAddToCart}
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.92 }}
-                  style={{ WebkitTransform: 'translateZ(0)' }}
                 />
               );
             })}
-          </AnimatePresence>
         </div>
       )}
 
