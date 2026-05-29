@@ -30,6 +30,10 @@ El frontend está dividido en dos grandes áreas funcionales:
    - **Animaciones Fluidas:** Incorporación de animaciones suaves (transiciones de páginas, carrusel, notificaciones *toast* al agregar productos) para un diseño de primera calidad.
    - **Notificaciones Toast:** Alertas visuales dinámicas que informan al usuario sobre acciones exitosas (como agregar un ítem al carrito).
 
+4. **Contacto y Comunicación:**
+   - **Formulario Integrado:** Una sección dedicada de contacto que permite a los usuarios enviar mensajes o consultas directamente desde la web.
+   - **Integración con Backend:** Los datos son validados y enviados a la API, la cual procesa y envía el correo electrónico, brindando retroalimentación visual (éxito/error) al usuario en tiempo real.
+
 ---
 
 ## 💻 Tecnologías y Herramientas Usadas
@@ -41,6 +45,8 @@ El frontend está dividido en dos grandes áreas funcionales:
 - **PostCSS (con `postcss-nesting`):** Procesador CSS que permite escribir hojas de estilo modernas utilizando "CSS Nesting" (anidación nativa de reglas) manteniendo el código limpio y modular, sin necesidad de compiladores pesados como SASS.
 - **Lucide React & React Icons:** Conjuntos de iconos vectoriales ligeros y escalables para ilustrar la interfaz (iconos de carrito, usuario, menú, etc.).
 - **ESLint:** Herramienta de análisis de código estático para identificar patrones problemáticos y mantener un estándar de calidad en el código JavaScript/React.
+- **Docker & Caddy:** Herramientas de contenedorización y servidor web utilizadas para empaquetar y servir la aplicación en producción.
+- **GitHub Actions:** CI/CD configurado para automatizar la construcción y publicación de la imagen en Docker Hub/GHCR.
 
 ---
 
