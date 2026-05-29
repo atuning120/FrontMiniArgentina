@@ -41,7 +41,7 @@ export default function ContactPopover({ buttonContent, targetEmail }) {
     setStatus('loading');
 
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
       const res = await fetch(`${baseUrl}/api/contacto`, {
         method: 'POST',
         headers: {

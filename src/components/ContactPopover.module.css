@@ -12,13 +12,15 @@
 
 .popover {
   position: absolute;
-  bottom: calc(100% + 15px); /* Por encima del trigger */
+  bottom: calc(100% + 15px);
+  /* Por encima del trigger */
   left: 50%;
   transform: translateX(-50%);
   width: 320px;
-  background-color: #1e293b; /* Más claro que el fondo oscuro */
+  background-color: #1e293b;
+  /* Más claro que el fondo oscuro */
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
   z-index: 100;
   animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   color: #f1f5f9;
@@ -29,6 +31,7 @@
     opacity: 0;
     transform: translateX(-50%) translateY(10px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0) scale(1);
@@ -55,7 +58,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
@@ -80,7 +83,7 @@
 }
 
 .closeBtn:hover {
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   color: #ef4444;
 }
 
@@ -114,19 +117,20 @@
 .inputGroup input,
 .inputGroup textarea {
   padding: 10px;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   font-size: 0.9rem;
   font-family: inherit;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background-color: rgba(0,0,0,0.15);
+  background-color: rgba(0, 0, 0, 0.15);
   color: #ffffff;
 }
 
 .inputGroup input:focus,
 .inputGroup textarea:focus {
   outline: none;
-  border-color: #3b82f6; /* Accent blue */
+  border-color: #3b82f6;
+  /* Accent blue */
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
 }
 
@@ -140,7 +144,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background-color: #3b82f6; /* Accent blue */
+  background-color: #3b82f6;
+  /* Accent blue */
   color: white;
   border: none;
   border-radius: 8px;
@@ -172,20 +177,39 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .successMessage {
+  user-select: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   padding: 24px 12px;
   gap: 12px;
+
+  p {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4caf50;
+  }
+
+  span {
+    font-size: 0.9rem;
+    color: #94a3b8;
+  }
 }
 
 .successIcon {
+  user-select: none;
   width: 48px;
   height: 48px;
   background-color: #4caf50;
@@ -198,19 +222,9 @@
   font-weight: bold;
 }
 
-.successMessage p {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #4caf50;
-}
-
-.successMessage span {
-  font-size: 0.9rem;
-  color: #94a3b8;
-}
 
 .errorMessage {
+  user-select: none;
   font-size: 0.85rem;
   color: #ef4444;
   margin: 0;
@@ -222,11 +236,13 @@
     left: 0;
     transform: none;
     animation: scaleInMobile 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    width: 290px; /* Un poco más angosto para asegurar que entre en pantallas de celulares pequeños */
+    width: 290px;
+    /* Un poco más angosto para asegurar que entre en pantallas de celulares pequeños */
   }
-  
+
   .arrow {
-    left: 42px; /* Apunta directamente al ícono del correo en móvil */
+    left: 42px;
+    /* Apunta directamente al ícono del correo en móvil */
     transform: translateX(-50%);
   }
 }
@@ -236,6 +252,7 @@
     opacity: 0;
     transform: translateY(10px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
