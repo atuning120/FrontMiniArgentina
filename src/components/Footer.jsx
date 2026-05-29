@@ -37,7 +37,7 @@ export default function Footer() {
             <div className={styles.columns}>
               <ul>
                 <li>
-                  <ContactPopover 
+                  <ContactPopover
                     targetEmail={import.meta.env.VITE_EMAIL || 'ventas@ledclean.ar'}
                     buttonContent={
                       <div className={styles.contactCard} style={{ textDecoration: 'none' }}>
@@ -66,7 +66,7 @@ export default function Footer() {
               </ul>
               <ul>
                 <li>
-                  <ContactPopover 
+                  <ContactPopover
                     targetEmail={import.meta.env.VITE_CONSULTAS_EMAIL || 'consultas@ledclean.ar'}
                     buttonContent={
                       <div className={styles.contactCard} style={{ textDecoration: 'none' }}>
@@ -94,3 +94,4 @@ export default function Footer() {
     </footer>
   );
 }
+
