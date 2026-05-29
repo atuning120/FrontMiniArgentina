@@ -1,10 +1,7 @@
 import { useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
-import { motion } from 'motion/react';
+import { ShoppingCart } from 'lucide-react';
 import ProductCard from './ProductCard.jsx';
 import styles from './ProductCarousel.module.css';
-
-const MProductCard = motion.create(ProductCard);
 
 export default function ProductCarousel({
   id,
@@ -33,13 +30,13 @@ export default function ProductCarousel({
     }, 320);
   };
 
-  const scrollCarousel = (direction) => {
-    if (!carouselRef.current) return;
-    const container = carouselRef.current;
-    const scrollAmount = container.clientWidth * 0.75;
-    container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-    triggerCarouselAnimation();
-  };
+  // Duplicamos los productos para el efecto de scroll infinito
+  const duplicatedProducts = [...products, ...products, ...products, ...products];
+
+  // Calculamos la duración dinámicamente para que la velocidad física sea la misma
+  // sin importar cuántos productos tenga cada carrusel.
+  // Si asume ~7.5s por producto, la animación de 2 ciclos (50%) tardará products.length * 15 segundos.
+  const animationDuration = products.length * 15;
 
   return (
     <section id={id} className={styles.carouselSection}>
@@ -57,56 +54,35 @@ export default function ProductCarousel({
           </div>
         </div>
 
-        <div className={styles.carouselWrap}>
-          <button
-            type="button"
-            className={`${styles.carouselArrow} ${styles.carouselArrowLeft}`}
-            onClick={() => scrollCarousel(-1)}
-            aria-label={`Desplazar ${title} hacia la izquierda`}
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <button
-            type="button"
-            className={`${styles.carouselArrow} ${styles.carouselArrowRight}`}
-            onClick={() => scrollCarousel(1)}
-            aria-label={`Desplazar ${title} hacia la derecha`}
-          >
-            <ChevronRight size={18} />
-          </button>
-          <div
-            className={`${styles.carouselList} ${styles.noScrollbar} ${styles.scrollingTouch} ${
-              isAnimating ? styles.carouselListAnimating : ''
-            }`}
-            ref={carouselRef}
-          >
-            {products.map((product) => {
-              const hasOffer = type === 'offer';
-              const isFeatured = type === 'featured';
-              let discount = null;
-              
-              if (hasOffer && product.originalPrice) {
-                discount = Math.round(
-                  ((product.originalPrice - product.price) / product.originalPrice) * 100
-                );
-              }
+          <div className={`${styles.carouselWrap} ${styles.infiniteMarquee}`}>
+            <div
+              className={`${styles.carouselList} ${styles.infiniteScrollList}`}
+              ref={carouselRef}
+              style={{ animationDuration: `${animationDuration}s` }}
+            >
+              {duplicatedProducts.map((product, index) => {
+                const hasOffer = type === 'offer';
+                let discount = null;
+                
+                if (hasOffer && product.originalPrice) {
+                  discount = Math.round(
+                    ((product.originalPrice - product.price) / product.originalPrice) * 100
+                  );
+                }
 
-              return (
-                <MProductCard
-                  key={`${type}-${product.id}`}
-                  product={product}
-                  type={type}
-                  isCarousel={true}
-                  onProductClick={onProductClick}
-                  onAddToCart={onAddToCart}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                />
-              );
-            })}
+                return (
+                  <ProductCard
+                    key={`${type}-${product.id}-${index}`}
+                    product={product}
+                    type={type}
+                    isCarousel={true}
+                    onProductClick={onProductClick}
+                    onAddToCart={onAddToCart}
+                  />
+                );
+              })}
+            </div>
           </div>
-        </div>
       </div>
     </section>
   );

@@ -82,6 +82,17 @@
 			scroll-snap-type: x mandatory;
 			scroll-behavior: smooth;
 
+			&.infiniteScrollList {
+				width: max-content;
+				overflow: visible;
+				animation: marquee-scroll 90s linear infinite;
+				scroll-snap-type: none;
+			}
+
+			&.infiniteScrollList:hover {
+				animation-play-state: paused;
+			}
+
 			&.carouselListAnimating {
 				animation: carousel-slide 0.32s ease;
 			}
@@ -98,6 +109,15 @@
 				-webkit-overflow-scrolling: touch;
 			}
 		}
+	}
+}
+
+@keyframes marquee-scroll {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-50%);
 	}
 }
 
