@@ -195,6 +195,7 @@ export default function App() {
         type="offer"
         onProductClick={setSelectedProduct}
         onAddToCart={addToCart}
+        isPaused={!!selectedProduct}
       />
 
       <ProductCarousel
@@ -205,6 +206,7 @@ export default function App() {
         type="featured"
         onProductClick={setSelectedProduct}
         onAddToCart={addToCart}
+        isPaused={!!selectedProduct}
       />
 
       <ProductCatalog
