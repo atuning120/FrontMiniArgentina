@@ -16,15 +16,28 @@ export default function ProductCarousel({
   isPaused,
 }) {
   const carouselRef = useRef(null);
+  const loopWidthRef = useRef(0);
+  const touchTimeoutRef = useRef(null);
+  const dragState = useRef({ isDragging: false, startX: 0, scrollLeft: 0 });
   const [isInteractionActive, setIsInteractionActive] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
   const [hasDragged, setHasDragged] = useState(false);
 
   useEffect(() => {
     const el = carouselRef.current;
     if (!el || products.length === 0) return;
+
+    // Calculamos el ancho exacto del bucle usando la posición real de los elementos
+    const children = el.children;
+    if (children.length >= products.length * 2) {
+      const firstItem = children[0];
+      const targetItem = children[products.length * 2];
+      if (firstItem && targetItem) {
+        loopWidthRef.current = targetItem.offsetLeft - firstItem.offsetLeft;
+      }
+    }
+    if (!loopWidthRef.current) {
+      loopWidthRef.current = el.scrollWidth / 2;
+    }
 
     let animationId;
     let accumulatedScroll = el.scrollLeft;
@@ -33,13 +46,14 @@ export default function ProductCarousel({
     const scroll = (time) => {
       const delta = time - lastTime;
       lastTime = time;
+      const loopWidth = loopWidthRef.current;
 
       if (!isInteractionActive && !isPaused) {
-        const speed = 0.05; // Ajusta la velocidad si es necesario
+        const speed = 0.05;
         accumulatedScroll += speed * delta;
         
-        if (accumulatedScroll >= el.scrollWidth / 2) {
-          accumulatedScroll -= el.scrollWidth / 2;
+        if (accumulatedScroll >= loopWidth) {
+          accumulatedScroll -= loopWidth;
         }
         
         el.scrollLeft = accumulatedScroll;
@@ -60,42 +74,73 @@ export default function ProductCarousel({
   const duplicatedProducts = [...products, ...products, ...products, ...products];
 
   const handleTouchStart = () => {
+    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
     const el = carouselRef.current;
-    if (el) {
+    const loopWidth = loopWidthRef.current || el?.scrollWidth / 2;
+    if (el && loopWidth) {
       if (el.scrollLeft <= 10) {
-        el.scrollLeft += el.scrollWidth / 2;
-      } else if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 10) {
-        el.scrollLeft -= el.scrollWidth / 2;
+        el.scrollLeft += loopWidth;
+      } else if (el.scrollLeft >= loopWidth * 1.5) {
+        el.scrollLeft -= loopWidth;
       }
     }
     setIsInteractionActive(true);
   };
 
+  const handleTouchEnd = () => {
+    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
+    touchTimeoutRef.current = setTimeout(() => {
+      setIsInteractionActive(false);
+    }, 1500);
+  };
+
   const handleMouseDown = (e) => {
-    setIsDragging(true);
+    dragState.current.isDragging = true;
     setHasDragged(false);
+    setIsInteractionActive(true);
+    
     const el = carouselRef.current;
     if (el) {
+      const loopWidth = loopWidthRef.current || el.scrollWidth / 2;
       if (el.scrollLeft <= 10) {
-        el.scrollLeft += el.scrollWidth / 2;
-      } else if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 10) {
-        el.scrollLeft -= el.scrollWidth / 2;
+        el.scrollLeft += loopWidth;
+      } else if (el.scrollLeft >= loopWidth * 1.5) {
+        el.scrollLeft -= loopWidth;
       }
-      setStartX(e.pageX - el.offsetLeft);
-      setScrollLeft(el.scrollLeft);
+      dragState.current.startX = e.pageX - el.offsetLeft;
+      dragState.current.scrollLeft = el.scrollLeft;
     }
   };
 
   const handleMouseMove = (e) => {
-    if (!isDragging) return;
+    if (!dragState.current.isDragging) return;
     e.preventDefault();
     setHasDragged(true);
     const el = carouselRef.current;
     if (el) {
       const x = e.pageX - el.offsetLeft;
-      const walk = (x - startX) * 1.5;
-      el.scrollLeft = scrollLeft - walk;
+      const walk = (x - dragState.current.startX) * 1.5;
+      let newScroll = dragState.current.scrollLeft - walk;
+      
+      const loopWidth = loopWidthRef.current || el.scrollWidth / 2;
+      
+      if (newScroll <= 10) {
+        newScroll += loopWidth;
+        dragState.current.startX = e.pageX - el.offsetLeft;
+        dragState.current.scrollLeft = newScroll;
+      } else if (newScroll >= loopWidth * 1.5) {
+        newScroll -= loopWidth;
+        dragState.current.startX = e.pageX - el.offsetLeft;
+        dragState.current.scrollLeft = newScroll;
+      }
+      
+      el.scrollLeft = newScroll;
     }
+  };
+
+  const handleMouseUpOrLeave = () => {
+    dragState.current.isDragging = false;
+    setIsInteractionActive(false);
   };
 
   const handleClickCapture = (e) => {
@@ -124,19 +169,16 @@ export default function ProductCarousel({
 
           <div className={styles.carouselWrap}>
             <div
-              className={`${styles.carouselList} ${styles.infiniteScrollList} ${isDragging ? styles.dragging : ''}`}
+              className={`${styles.carouselList} ${styles.infiniteScrollList}`}
               ref={carouselRef}
               onMouseEnter={() => setIsInteractionActive(true)}
-              onMouseLeave={() => {
-                setIsInteractionActive(false);
-                setIsDragging(false);
-              }}
+              onMouseLeave={handleMouseUpOrLeave}
               onMouseDown={handleMouseDown}
-              onMouseUp={() => setIsDragging(false)}
+              onMouseUp={handleMouseUpOrLeave}
               onMouseMove={handleMouseMove}
               onClickCapture={handleClickCapture}
               onTouchStart={handleTouchStart}
-              onTouchEnd={() => setIsInteractionActive(false)}
+              onTouchEnd={handleTouchEnd}
             >
               {duplicatedProducts.map((product, index) => {
                 const hasOffer = type === 'offer';
