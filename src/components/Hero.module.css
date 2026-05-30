@@ -19,6 +19,7 @@
 .heroContainer {
   position: relative;
   width: 100%;
+  touch-action: pan-y;
 
   &:hover .navButton {
     display: flex;

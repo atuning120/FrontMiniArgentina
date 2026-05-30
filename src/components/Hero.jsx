@@ -77,16 +77,61 @@ const HERO_SLIDES = [
 
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState(1);
   const [isHoveringCarousel, setIsHoveringCarousel] = useState(false);
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
+
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const minSwipeDistance = 50;
+
+  const nextSlide = () => {
+    setDirection(1);
+    setCurrentSlide(prev => (prev + 1) % HERO_SLIDES.length);
+  };
+
+  const prevSlide = () => {
+    setDirection(-1);
+    setCurrentSlide(prev => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+  };
+
+  const goToSlide = (idx) => {
+    if (idx === currentSlide) return;
+    setDirection(idx > currentSlide ? 1 : -1);
+    setCurrentSlide(idx);
+  };
+
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    }
+    if (isRightSwipe) {
+      prevSlide();
+    }
+  };
 
   useEffect(() => {
     if (isHoveringCarousel) return;
     const interval = setInterval(() => {
+      setDirection(1);
       setCurrentSlide(prev => (prev + 1) % HERO_SLIDES.length);
     }, 6000);
     return () => clearInterval(interval);
-  }, [isHoveringCarousel]);
+  }, [isHoveringCarousel, currentSlide]);
 
   const handleCtaAction = (action) => {
     let el;
@@ -127,17 +172,26 @@ export default function Hero() {
           className={styles.heroContainer}
           onMouseEnter={() => setIsHoveringCarousel(true)}
           onMouseLeave={() => setIsHoveringCarousel(false)}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           <div className={styles.carouselWrapper}>
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" custom={direction}>
               {HERO_SLIDES.map((slide, idx) => {
                 if (idx !== currentSlide) return null;
                 return (
                   <motion.div
                     key={slide.id}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
+                    custom={direction}
+                    variants={{
+                      enter: (dir) => ({ opacity: 0, x: dir > 0 ? 50 : -50 }),
+                      center: { opacity: 1, x: 0 },
+                      exit: (dir) => ({ opacity: 0, x: dir > 0 ? -50 : 50 })
+                    }}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
                     transition={{ duration: 0.5, ease: "easeInOut" }}
                     className={styles.slide}
                   >
@@ -219,14 +273,14 @@ export default function Hero() {
             </AnimatePresence>
 
             <button
-              onClick={() => setCurrentSlide(prev => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+              onClick={prevSlide}
               className={`${styles.navButton} ${styles.navButtonLeft}`}
               aria-label="Previous Slide"
             >
               <ChevronLeft size={20} />
             </button>
             <button
-              onClick={() => setCurrentSlide(prev => (prev + 1) % HERO_SLIDES.length)}
+              onClick={nextSlide}
               className={`${styles.navButton} ${styles.navButtonRight}`}
               aria-label="Next Slide"
             >
@@ -237,7 +291,7 @@ export default function Hero() {
               {HERO_SLIDES.map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setCurrentSlide(idx)}
+                  onClick={() => goToSlide(idx)}
                   className={`${styles.indicatorDot} ${idx === currentSlide ? styles.indicatorDotActive : ''}`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
