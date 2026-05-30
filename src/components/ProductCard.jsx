@@ -43,6 +43,7 @@ const ProductCard = forwardRef(({
             src={product.image}
             alt={product.name}
             referrerPolicy="no-referrer"
+            draggable="false"
           />
         ) : (
           <div className={styles.noImage}>No hay imagen</div>
