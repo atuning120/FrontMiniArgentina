@@ -94,7 +94,7 @@
 				display: none;
 			}
 
-			&.dragging {
+			&.infiniteScrollList:active {
 				cursor: grabbing;
 			}
 
