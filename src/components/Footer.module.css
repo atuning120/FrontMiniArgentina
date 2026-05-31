@@ -280,6 +280,7 @@
 			align-items: center;
 			justify-content: center;
 			gap: 0.75rem;
+			padding-right: clamp(1rem, 6vw, 5rem);
 
 			&::before {
 				content: '';
@@ -291,6 +292,47 @@
 				box-shadow: 0 0 10px var(--accent-500);
 				animation: pulse 2s infinite;
 			}
+		}
+
+		.copyrightSection {
+			display: flex;
+			flex-direction: column;
+			gap: 0.75rem;
+			align-items: center;
+		}
+
+		.developedBy {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.5rem;
+			color: rgba(255, 255, 255, 0.4);
+			font-size: 0.625rem;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+		}
+
+		.githubLink {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.35rem;
+			color: rgba(255, 255, 255, 0.7);
+			text-decoration: none;
+			transition: all 0.3s ease;
+			text-transform: none;
+
+			&:hover {
+				color: #fff;
+				
+				.githubIcon {
+					transform: scale(1.1);
+				}
+			}
+		}
+
+		.githubIcon {
+			font-size: 1rem;
+			transition: transform 0.3s ease;
 		}
 	}
 }
@@ -356,6 +398,10 @@
 			justify-content: space-between;
 			align-items: center;
 			text-align: left;
+
+			.copyrightSection {
+				align-items: flex-start;
+			}
 		}
 	}
 }

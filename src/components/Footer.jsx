@@ -1,5 +1,5 @@
 import { Mail, MapPin, MessageCircle } from 'lucide-react';
-import { FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa';
+import { FaFacebookF, FaInstagram, FaYoutube, FaGithub } from 'react-icons/fa';
 import styles from './Footer.module.css';
 import ContactPopover from './ContactPopover';
 
@@ -87,7 +87,16 @@ export default function Footer() {
         </div>
 
         <div className={styles.bottom}>
-          <p>&copy; 2026 LED CLEAN. TRABAJAMOS CON LOS MEJORES.</p>
+          <div className={styles.copyrightSection}>
+            <p>&copy; 2026 LED CLEAN. TRABAJAMOS CON LOS MEJORES.</p>
+            <div className={styles.developedBy}>
+              Desarrollado por
+              <a href="https://github.com/atuning120" target="_blank" rel="noopener noreferrer" className={styles.githubLink}>
+                <FaGithub className={styles.githubIcon} />
+                atuning120
+              </a>
+            </div>
+          </div>
           <span>PAGOS PROCESADOS POR MERCADO PAGO</span>
         </div>
       </div>
