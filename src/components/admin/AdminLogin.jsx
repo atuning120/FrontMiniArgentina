@@ -8,6 +8,9 @@ export default function AdminLogin({ baseUrl, onSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [captchaToken, setCaptchaToken] = useState('');
+  const [requireCaptcha, setRequireCaptcha] = useState(false);
+  const [captchaTimestamp, setCaptchaTimestamp] = useState(Date.now());
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -15,14 +18,24 @@ export default function AdminLogin({ baseUrl, onSuccess }) {
     setError('');
 
     try {
+      const payload = { username, password };
+      if (requireCaptcha) {
+        payload.captchaToken = captchaToken;
+      }
+
       const response = await fetch(`${baseUrl}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
       if (!response.ok) {
+        if (data.requireCaptcha) {
+          setRequireCaptcha(true);
+          setCaptchaTimestamp(Date.now());
+          setCaptchaToken('');
+        }
         throw new Error(data.error || 'Error al iniciar sesion');
       }
 
@@ -77,6 +90,43 @@ export default function AdminLogin({ baseUrl, onSuccess }) {
             </button>
           </div>
         </label>
+
+        {requireCaptcha && (
+          <label className={styles.label}>
+            Resuelve la suma (Seguridad)
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '10px', marginTop: '5px' }}>
+              <img 
+                src={`${baseUrl}/api/admin/captcha?t=${captchaTimestamp}`} 
+                alt="Captcha Matemático" 
+                style={{ borderRadius: '6px', border: '1px solid #444', background: '#fff', height: '40px' }}
+              />
+              <button 
+                type="button" 
+                onClick={() => setCaptchaTimestamp(Date.now())}
+                style={{ 
+                  padding: '0.4rem 0.8rem', 
+                  borderRadius: '6px', 
+                  border: 'none', 
+                  background: '#333', 
+                  color: 'white', 
+                  cursor: 'pointer',
+                  height: '40px'
+                }}
+                title="Recargar CAPTCHA"
+              >
+                ↻
+              </button>
+            </div>
+            <input
+              type="text"
+              value={captchaToken}
+              onChange={(event) => setCaptchaToken(event.target.value)}
+              className={styles.input}
+              placeholder="Ej: 8"
+              required
+            />
+          </label>
+        )}
 
         {error ? <div className={styles.error}>{error}</div> : null}
 
