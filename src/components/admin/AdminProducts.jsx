@@ -500,8 +500,7 @@ export default function AdminProducts({ baseUrl, token }) {
                     <h4 className={styles.productTitle}>{product.nombre}</h4>
                   </div>
                   <p className={styles.productDesc}>
-                    {product.descripcion?.substring(0, 80)}
-                    {product.descripcion?.length > 80 ? '...' : ''}
+                    {product.descripcion}
                   </p>
                   
                   <div className={styles.productActions}>
@@ -623,10 +622,7 @@ export default function AdminProducts({ baseUrl, token }) {
                       </h4>
                     </div>
                     <p className={styles.productDesc}>
-                      {editForm.descripcion
-                        ? editForm.descripcion.substring(0, 90)
-                        : 'Descripcion corta del producto para la tarjeta.'}
-                      {editForm.descripcion?.length > 90 ? '...' : ''}
+                      {editForm.descripcion || 'Descripcion corta del producto para la tarjeta.'}
                     </p>
 
                     <div className={styles.productActions}>

@@ -11,15 +11,23 @@
 
   .modal {
     position: relative;
-    max-width: 860px;
+    max-width: 1024px; /* Modal mucho más ancho en PC */
     width: 100%;
     background: var(--midnight-light);
     border-radius: 1.5rem;
     overflow: hidden;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    display: flex;
+    flex-direction: column;
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 30px 60px rgba(2, 6, 23, 0.6);
+    height: 85vh; /* Altura fija en móvil */
+    max-height: 85vh;
+    
+    @media (min-width: 641px) {
+      flex-direction: row;
+      height: 560px; /* Altura fija e inmutable en PC */
+      max-height: 560px;
+    }
     
     /* Hardware acceleration fixes to prevent glitching on mobile/Android */
     -webkit-transform: translate3d(0, 0, 0);
@@ -49,12 +57,21 @@
     .media {
       position: relative;
       background: rgba(0, 0, 0, 0.4);
-      min-height: 280px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      
+      @media (max-width: 640px) {
+        flex: none;
+        height: 40vh;
+      }
 
       img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
       }
 
       .noImage {
@@ -108,6 +125,8 @@
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
+      flex: 1;
+      min-height: 0;
 
       h2 {
         margin: 0;
@@ -117,8 +136,27 @@
 
       p {
         margin: 0;
-        color: rgba(255, 255, 255, 0.6);
-        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.6;
+        font-size: 0.95rem;
+        font-weight: 500;
+        white-space: pre-wrap; /* Respeta los saltos de línea del texto original */
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding-right: 0.5rem; /* Separación de la barra de scroll */
+
+        /* Estilizar barra de desplazamiento para la descripción */
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.15);
+          border-radius: 4px;
+        }
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
       }
 
       .tag {
