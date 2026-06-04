@@ -16,6 +16,8 @@ RUN npm run build
 FROM nginx:alpine as production
 
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
+# Copiamos index.html a 404.html para que Nginx lo sirva en errores 404
+RUN cp /usr/share/nginx/html/index.html /usr/share/nginx/html/404.html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
