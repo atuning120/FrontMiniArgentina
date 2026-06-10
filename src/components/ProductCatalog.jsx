@@ -59,7 +59,7 @@ export default function ProductCatalog({
     <section className={styles.catalogSection} id="catalog">
       <div className={styles.catalogHeader}>
         <div>
-          <h3 className={styles.catalogTitle}>Todos los productos</h3>
+          <h3 className={styles.catalogTitle}>Catálogo de productos</h3>
           <div className={styles.catalogDivider}></div>
         </div>
         <span className={styles.catalogMeta}>

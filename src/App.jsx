@@ -31,7 +31,7 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('Todos');
+  const [activeCategory, setActiveCategory] = useState('iluminacion');
   const [toast, setToast] = useState(null);
 
   useEffect(() => {
@@ -103,11 +103,7 @@ export default function App() {
     }
   }, [isCartOpen]);
 
-  const categories = useMemo(() => {
-    const cats = new Set(products.map((p) => p.category));
-    cats.add('limpieza');
-    return ['Todos', ...Array.from(cats)];
-  }, [products]);
+  const categories = baseCategories;
 
   const filteredProducts = useMemo(() => {
     const searchTerms = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
@@ -120,8 +116,7 @@ export default function App() {
         name.includes(term) || desc.includes(term)
       );
 
-      const matchesCategory =
-        activeCategory === 'Todos' || p.category === activeCategory;
+      const matchesCategory = p.category === activeCategory;
 
       return matchesSearch && matchesCategory;
     });
