@@ -64,7 +64,7 @@ export default function AdminProducts({ baseUrl, token }) {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [notice, setNotice] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('todos');
+  const [activeCategory, setActiveCategory] = useState('iluminacion');
   const [dragActive, setDragActive] = useState(false);
 
   const headers = useMemo(
@@ -362,8 +362,7 @@ export default function AdminProducts({ baseUrl, token }) {
   };
 
   const filteredProducts = products.filter((product) => {
-    const matchesCategory =
-      activeCategory === 'todos' || product.categoria === activeCategory;
+    const matchesCategory = product.categoria === activeCategory;
     if (!matchesCategory) return false;
 
     if (!searchQuery.trim()) return true;
@@ -441,7 +440,7 @@ export default function AdminProducts({ baseUrl, token }) {
         <Filters
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          filterCategories={['todos', ...BASE_CATEGORIES]}
+          filterCategories={BASE_CATEGORIES}
           activeCategory={activeCategory}
           setActiveCategory={setActiveCategory}
         />

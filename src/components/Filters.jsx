@@ -19,7 +19,7 @@ export default function Filters({
               activeCategory === cat ? styles.categoryButtonActive : ''
             }`}
           >
-            {cat === 'Todos' ? 'TODOS' : cat}
+            {cat}
           </button>
         ))}
       </div>
