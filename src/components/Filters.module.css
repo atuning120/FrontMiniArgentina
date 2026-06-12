@@ -34,6 +34,8 @@
 			color: rgba(255, 255, 255, 0.45);
 			cursor: pointer;
 			transition: all 0.2s ease;
+			-webkit-tap-highlight-color: transparent;
+			outline: none;
 
 			&:hover {
 				color: #fff;
@@ -85,7 +87,23 @@
 			}
 		}
 	}
+}
+
+@media (max-width: 768px) {
 
 
+	.filters {
+		.categoryList {
+			flex-direction: column;
+			width: 100%;
 
+			.categoryButton {
+				width: 100%;
+			}
+		}
+
+		.searchWrap {
+			max-width: 100%;
+		}
+	}
 }
