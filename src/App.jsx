@@ -14,7 +14,7 @@ import Toast from './components/Toast.jsx';
 import styles from './App.module.css';
 
 export default function App() {
-  const baseCategories = ['iluminacion', 'ferreteria', 'limpieza'];
+  const baseCategories = ['iluminacion', 'ferreteria', 'limpieza', 'electricidad'];
   const normalizeCategory = (value) => (value || '').trim().toLowerCase();
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
